@@ -12,33 +12,25 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    const GOOGLE_AUTH = 0;
+    const FACEBOOK_AUTH = 1;
+    const DEFAULT_AUTH = 2;
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'avatar_url',
+        'google_token',
+        'facebook_token',
+        'email_verified_at',
+        'remember_token'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+        'google_token',
+        'facebook_token',
     ];
 }

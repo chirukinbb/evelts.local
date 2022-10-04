@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
 });
+
+Route::get('/auth/redirect', [\App\Http\Controllers\Auth\GoogleController::class,'redirect'])->name('google_redirect');
+
+Route::get('/auth/callback', [\App\Http\Controllers\Auth\GoogleController::class,'callback'])->name('google_callback');
