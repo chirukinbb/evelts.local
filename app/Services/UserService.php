@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Http\Resources\AuthResource;
 use App\Jobs\SendRegistratiobMail;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\File;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
@@ -16,9 +18,7 @@ class UserService
             $this->registration($attrs);
         }
 
-        return ($this->login($attrs)) ?
-            AuthResource::make($this->login($attrs))
-            : response()->json(0);
+        return $this->login($attrs);
     }
 
     protected function registration(array $attrs)
@@ -38,6 +38,27 @@ class UserService
         ]);
 
         SendRegistratiobMail::dispatch($user,$attrs['password'],$slug);
+
+        return $user;
+    }
+
+    protected function addData(User $user, int $type, string $token)
+    {
+        switch ($type) {
+            case User::FACEBOOK_AUTH:
+                $socialite_user = Socialite::driver('facebook')->userFromToken($token);
+                $user->facebook_token = $token;
+                break;
+            case User::GOOGLE_AUTH:
+                $socialite_user = Socialite::driver('google')->userFromToken($token);
+                $user->google_token = $token;
+                break;
+            default:
+        }
+
+        $user->name = $socialite_user->getName();
+        $user->avatar_url = $socialite_user->getAvatar();
+        $user->save();
     }
 
     protected function login(array $attrs)
@@ -46,13 +67,19 @@ class UserService
 
         switch ($attrs['type']) {
             case User::FACEBOOK_AUTH:
-                $isLogin = \Hash::check($attrs['token'],$user->facebook_token);
+                if (is_null($user->facebook_token))
+                    $this->addData($user,User::FACEBOOK_AUTH,$attrs['password']);
+
+                $isLogin = \Hash::check($attrs['password'],$user->facebook_token);
                 break;
             case User::GOOGLE_AUTH:
-                $isLogin = \Hash::check($attrs['token'],$user->google_token);
+                if (is_null($user->google_token))
+                    $this->addData($user,User::GOOGLE_AUTH,$attrs['password']);
+
+                $isLogin = \Hash::check($attrs['password'],$user->google_token);
                 break;
             default:
-                $isLogin = Auth::attempt($attrs,$attrs['remember_me']);
+                $isLogin = Auth::attempt($attrs,$attrs['remember_me'] ?? false);
                 $user  = Auth::user();
         }
 
@@ -69,5 +96,18 @@ class UserService
             $user->email_verified_at = Carbon::now();
             $user->save();
         }
+    }
+
+    public function updateData(array $attrs)
+    {
+        /**
+         * @var UploadedFile $avatar
+         */
+        $avatar = $attrs['avatar'];
+        Auth::user()->update([
+            'avatar_url'=>$avatar->storePublicly('avatars'),
+            'name'=>$attrs['name'],
+            'description'=>$attrs['description']
+        ]);
     }
 }

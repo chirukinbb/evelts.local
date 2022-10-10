@@ -24,7 +24,8 @@ class User extends Authenticatable
         'google_token',
         'facebook_token',
         'email_verified_at',
-        'remember_token'
+        'remember_token',
+        'description'
     ];
 
     protected $hidden = [
@@ -33,4 +34,24 @@ class User extends Authenticatable
         'google_token',
         'facebook_token',
     ];
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = \Hash::make($value);
+    }
+
+    public function setGoogleTokenAttribute($value)
+    {
+        $this->attributes['google_token'] = \Hash::make($value);
+    }
+
+    public function setFacebookTokenAttribute($value)
+    {
+        $this->attributes['facebook_token'] = \Hash::make($value);
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = $value  ?? \Arr::first(explode('@',$this->attributes['email']));
+    }
 }
