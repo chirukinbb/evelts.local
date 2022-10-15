@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Jobs\SendRegistratiobMail;
+use App\Mail\ChangeEmailMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\File;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -86,13 +88,13 @@ class UserService
         return $isLogin ? $user : false;
     }
 
-    public function confirm(array $attrs)
+    public function confirm(string $email,string $slug)
     {
-        $user = User::whereEmail($attrs['email'])->first();
-        $slug = \DB::table('confirms')->select('slug')
+        $user = User::whereEmail($email)->first();
+        $slugHash = \DB::table('confirms')->select('slug')
             ->where('id',$user->id)->first()->slug;
 
-        if (\Hash::check($attrs['slug'],$slug)){
+        if (\Hash::check($slug,$slugHash)){
             $user->email_verified_at = Carbon::now();
             $user->save();
         }
@@ -104,10 +106,54 @@ class UserService
          * @var UploadedFile $avatar
          */
         $avatar = $attrs['avatar'];
-        Auth::user()->update([
+        return Auth::user()->update([
             'avatar_url'=>$avatar->storePublicly('avatars'),
             'name'=>$attrs['name'],
             'description'=>$attrs['description']
         ]);
+    }
+
+    public function changePassword(array $attrs)
+    {
+        if (Hash::check($attrs['password'],Auth::user()->password)) {
+            Auth::user()->password = $attrs['new_password'];
+
+            return Auth::user()->save();
+        }
+
+        return false;
+    }
+
+    public function changeEmailRequest(array $attrs)
+    {
+        if (Hash::check($attrs['password'],Auth::user()->password)) {
+            $code = \Str::random();
+
+            $result = \DB::table('changes')->update([
+                'user_id' => Auth::id(),
+                'code' => $code,
+                'new_email' => $attrs['email']
+            ]);
+
+            \Mail::to($attrs['email'])->send(new ChangeEmailMail(Auth::user(),$code));
+
+            return $result;
+        }
+
+        return false;
+    }
+
+    public function changeEmail(string $code)
+    {
+        $change = \DB::table('changes')->where('user_id',Auth::id())
+            ->first();
+
+        if ($change && Hash::check($code,$change->code)) {
+            Auth::user()->email =  $change->new_email;
+
+            return Auth::user()->save();
+        }
+
+        return false;
     }
 }

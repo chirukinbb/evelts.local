@@ -14,9 +14,6 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::get('/', function () {
-});
-
-Route::get('/auth/redirect', [\App\Http\Controllers\Auth\GoogleController::class,'redirect'])->name('google_redirect');
-
-Route::get('/auth/callback', [\App\Http\Controllers\Auth\GoogleController::class,'callback'])->name('google_callback');
+Route::get('/', [\App\Http\Controllers\MainController::class,'index'])->name('home');
+Route::get('/email/{code}', [\App\Http\Controllers\MainController::class,'updateEmail'])->name('email');
+Route::get('/email/{code}', [\App\Http\Controllers\MainController::class,'confirmEmail'])->name('confirm');
