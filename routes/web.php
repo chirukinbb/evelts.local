@@ -16,4 +16,4 @@ use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', [\App\Http\Controllers\MainController::class,'index'])->name('home');
 Route::get('/email/{code}', [\App\Http\Controllers\MainController::class,'updateEmail'])->name('email');
-Route::get('/email/{code}', [\App\Http\Controllers\MainController::class,'confirmEmail'])->name('confirm');
+Route::get('/confirm/{slug}', [\App\Http\Controllers\MainController::class,'confirmEmail'])->name('confirm');

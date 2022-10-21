@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\RegistratiobMail;
+use App\Mail\RegistrationMail;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -37,7 +37,7 @@ class SendRegistratiobMail implements ShouldQueue
     public function handle()
     {
         \Mail::to($this->user->email)->send(
-            new RegistratiobMail(
+            new RegistrationMail(
                 $this->user,$this->password,$this->slug
             )
         );
