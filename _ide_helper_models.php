@@ -38,6 +38,7 @@ namespace App\Models {
      * @property int $user_id
      * @property User $user
      * @property int $category_id
+     * @property int $slots
      * @property Category $category
      * @property string $title
      * @property string $thumbnail_url

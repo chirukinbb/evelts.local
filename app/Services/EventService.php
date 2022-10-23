@@ -88,4 +88,14 @@ class EventService
     {
         return Event::whereId($id)->first();
     }
+
+    public function subscribe(int $eventId)
+    {
+        Event::whereId($eventId)->subscribers()->create(['user_id' => \Auth::id()]);
+    }
+
+    public function unsubscribe(int $eventId)
+    {
+        Event::whereId($eventId)->subscribers()->where('user_id', \Auth::id())->delete();
+    }
 }

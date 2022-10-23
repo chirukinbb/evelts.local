@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('country');
             $table->string('city');
             $table->string('planing_time');
+            $table->integer('slots');
             $table->timestamp('is_happened');
             $table->softDeletes();
             $table->timestamps();

@@ -21,16 +21,22 @@ class Event extends Model
         'country',
         'city',
         'planing_time',
-        'is_happened'
+        'is_happened',
+        'slots'
     ];
 
     public function category()
     {
-        $this->hasOne(Category::class);
+        return $this->hasOne(Category::class);
     }
 
-    public function user()
+    public function author()
     {
-        $this->hasOne(User::class);
+        return $this->hasOne(User::class);
+    }
+
+    public function subscribers()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

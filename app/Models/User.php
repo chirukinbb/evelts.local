@@ -55,4 +55,31 @@ class User extends Authenticatable
     {
         $this->attributes['name'] = $value ?? \Arr::first(explode('@', $this->attributes['email']));
     }
+
+    public function friends()
+    {
+        $firstUsers = $this->hasMany('relations', 'first_user_id', 'id')
+            ->whereNotNull('approve')->get();
+        $secondUsers = $this->hasMany('relations', 'second_user_id', 'id')
+            ->whereNotNull('approve')->get();
+
+        return [];
+    }
+
+    public function followers()
+    {
+        return $this->hasMany('relations', 'first_user_id', 'id')
+            ->whereNull('approve')->get();
+    }
+
+    public function followedOn()
+    {
+        return $this->hasMany('relations', 'first_user_id', 'id')
+            ->whereNull('approve')->get();
+    }
+
+    public function subscribeOnEvents()
+    {
+        return $this->belongsToMany(Event::class);
+    }
 }

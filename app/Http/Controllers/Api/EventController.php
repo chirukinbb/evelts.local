@@ -37,4 +37,12 @@ class EventController extends Controller
 
         return response()->json(1);
     }
+
+    public function subscribe(int $eventId)
+    {
+    }
+
+    public function unsubscribe(int $eventId)
+    {
+    }
 }

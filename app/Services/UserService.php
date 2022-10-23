@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\File;
 use Laravel\Socialite\Facades\Socialite;
 
 class UserService
@@ -35,11 +34,11 @@ class UserService
 
         $slug = \Str::random(6);
         \DB::table('confirms')->insert([
-            'user_id'=>$user->id,
-            'slug'=>\Hash::make($slug)
+            'user_id' => $user->id,
+            'slug' => \Hash::make($slug)
         ]);
 
-        SendRegistratiobMail::dispatch($user,$attrs['password'],$slug);
+        SendRegistratiobMail::dispatch($user, $attrs['password'], $slug);
 
         return $user;
     }
@@ -70,31 +69,31 @@ class UserService
         switch ($attrs['type']) {
             case User::FACEBOOK_AUTH:
                 if (is_null($user->facebook_token))
-                    $this->addData($user,User::FACEBOOK_AUTH,$attrs['password']);
+                    $this->addData($user, User::FACEBOOK_AUTH, $attrs['password']);
 
-                $isLogin = \Hash::check($attrs['password'],$user->facebook_token);
+                $isLogin = \Hash::check($attrs['password'], $user->facebook_token);
                 break;
             case User::GOOGLE_AUTH:
                 if (is_null($user->google_token))
-                    $this->addData($user,User::GOOGLE_AUTH,$attrs['password']);
+                    $this->addData($user, User::GOOGLE_AUTH, $attrs['password']);
 
-                $isLogin = \Hash::check($attrs['password'],$user->google_token);
+                $isLogin = \Hash::check($attrs['password'], $user->google_token);
                 break;
             default:
-                $isLogin = Auth::attempt($attrs,$attrs['remember_me'] ?? false);
-                $user  = Auth::user();
+                $isLogin = Auth::attempt($attrs, $attrs['remember_me'] ?? false);
+                $user = Auth::user();
         }
 
         return $isLogin ? $user : false;
     }
 
-    public function confirm(string $email,string $slug)
+    public function confirm(string $email, string $slug)
     {
         $user = User::whereEmail($email)->first();
         $slugHash = \DB::table('confirms')->select('slug')
-            ->where('id',$user->id)->first()->slug;
+            ->where('id', $user->id)->first()->slug;
 
-        if (\Hash::check($slug,$slugHash)){
+        if (\Hash::check($slug, $slugHash)) {
             $user->email_verified_at = Carbon::now();
             $user->save();
         }
@@ -107,15 +106,15 @@ class UserService
          */
         $avatar = $attrs['avatar'];
         return Auth::user()->update([
-            'avatar_url'=>$avatar->storePublicly('avatars'),
-            'name'=>$attrs['name'],
-            'description'=>$attrs['description']
+            'avatar_url' => $avatar->storePublicly('avatars'),
+            'name' => $attrs['name'],
+            'description' => $attrs['description']
         ]);
     }
 
     public function changePassword(array $attrs)
     {
-        if (Hash::check($attrs['password'],Auth::user()->password)) {
+        if (Hash::check($attrs['password'], Auth::user()->password)) {
             Auth::user()->password = $attrs['new_password'];
 
             return Auth::user()->save();
@@ -126,7 +125,7 @@ class UserService
 
     public function changeEmailRequest(array $attrs)
     {
-        if (Hash::check($attrs['password'],Auth::user()->password)) {
+        if (Hash::check($attrs['password'], Auth::user()->password)) {
             $code = \Str::random();
 
             $result = \DB::table('changes')->update([
@@ -135,7 +134,7 @@ class UserService
                 'new_email' => $attrs['email']
             ]);
 
-            \Mail::to($attrs['email'])->send(new ChangeEmailMail(Auth::user(),$code));
+            \Mail::to($attrs['email'])->send(new ChangeEmailMail(Auth::user(), $code));
 
             return $result;
         }
@@ -145,15 +144,35 @@ class UserService
 
     public function changeEmail(string $code)
     {
-        $change = \DB::table('changes')->where('user_id',Auth::id())
+        $change = \DB::table('changes')->where('user_id', Auth::id())
             ->first();
 
-        if ($change && Hash::check($code,$change->code)) {
-            Auth::user()->email =  $change->new_email;
+        if ($change && Hash::check($code, $change->code)) {
+            Auth::user()->email = $change->new_email;
 
             return Auth::user()->save();
         }
 
         return false;
+    }
+
+    public function following(int $userId)
+    {
+        User::whereId($userId)->followers()->add(['first_user_id' => Auth::id()]);
+    }
+
+    public function acceptFriendship(int $userId)
+    {
+        User::whereId($userId)->followers()->where('first_user_id', Auth::id());
+    }
+
+    public function removeFromFriend(int $userId)
+    {
+        User::whereId($userId)->followers()->where('first_user_id', Auth::id());
+    }
+
+    public function unfollowing(int $userId)
+    {
+        User::whereId($userId)->followers()->where('first_user_id', Auth::id());
     }
 }
