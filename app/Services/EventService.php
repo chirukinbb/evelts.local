@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
 use yidas\googleMaps\Client;
@@ -97,5 +98,32 @@ class EventService
     public function unsubscribe(int $eventId)
     {
         Event::whereId($eventId)->subscribers()->where('user_id', \Auth::id())->delete();
+    }
+
+    public function addComment(int $eventId, array $attrs)
+    {
+        Event::whereId($eventId)->comments->create([
+            'user_id' => \Auth::id(),
+            'content' => $attrs['content'],
+            'parent_comment_id' => $attrs['parent_comment_id'] ?? 0
+        ]);
+    }
+
+    public function editComment(int $commentId, string $content)
+    {
+        $comment = Event::whereId($commentId)->first();
+
+        if ($comment->user_id === \Auth::id() && Comment::whereParentCommentId($commentId)->doesntExist()) {
+            $comment->update(['content' => $content]);
+        }
+    }
+
+    public function deleteComment(int $commentId)
+    {
+        $comment = Event::whereId($commentId)->first();
+
+        if ($comment->user_id === \Auth::id() && Comment::whereParentCommentId($commentId)->doesntExist()) {
+            $comment->delete();
+        }
     }
 }

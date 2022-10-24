@@ -18,9 +18,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('second_user_id');
             $table->integer('approve')->nullable();
 
-            $table->foreign('user_id')->references('id')
+            $table->foreign('first_user_id')->references('id')
                 ->on('users')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')
+            $table->foreign('second_user_id')->references('id')
                 ->on('users')->onDelete('cascade');
         });
     }

@@ -32,4 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('v1/event/{id}', [\App\Http\Controllers\Api\EventController::class, 'get']);
     Route::get('v1/event/subscribe/{id}', [\App\Http\Controllers\Api\EventController::class, 'subscribe']);
     Route::get('v1/event/unsubscribe/{id}', [\App\Http\Controllers\Api\EventController::class, 'unsubscribe']);
+    Route::post('v1/event/addComment', [\App\Http\Controllers\Api\EventController::class, 'addComment']);
+    Route::post('v1/event/editComment/{id}', [\App\Http\Controllers\Api\EventController::class, 'editComment']);
+    Route::get('v1/event/deleteComment/{id}', [\App\Http\Controllers\Api\EventController::class, 'deleteComment']);
 });

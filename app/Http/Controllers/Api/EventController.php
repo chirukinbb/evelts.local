@@ -7,6 +7,7 @@ use App\Http\Requests\EventListRequest;
 use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventResource;
 use App\Services\EventService;
+use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
@@ -28,21 +29,48 @@ class EventController extends Controller
     {
         $this->service->create($request->full());
 
-        return response()->json(1);
+        return response()->json();
     }
 
     public function update(EventRequest $request)
     {
         $this->service->update($request->full());
 
-        return response()->json(1);
+        return response()->json();
     }
 
     public function subscribe(int $eventId)
     {
+        $this->service->subscribe($eventId);
+
+        return response()->json();
     }
 
     public function unsubscribe(int $eventId)
     {
+        $this->service->unsubscribe($eventId);
+
+        return response()->json();
+    }
+
+    public function addComment(int $eventId, Request $request)
+    {
+        $this->service->addComment($eventId, $request->all());
+
+        return response()->json();
+    }
+
+    public function editComment(int $eventId, Request $request)
+    {
+        $this->service->editComment($eventId, $request->post('content'));
+
+        return response()->json();
+    }
+
+    public function deleteComment(int $eventId)
+    {
+        $this->service->deleteComment($eventId);
+
+        return response()->json();
     }
 }
