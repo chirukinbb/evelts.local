@@ -21,34 +21,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'avatar_url',
-        'google_token',
-        'facebook_token',
         'email_verified_at',
         'remember_token',
-        'description'
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
-        'google_token',
-        'facebook_token',
+        'remember_token'
     ];
 
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = \Hash::make($value);
-    }
-
-    public function setGoogleTokenAttribute($value)
-    {
-        $this->attributes['google_token'] = \Hash::make($value);
-    }
-
-    public function setFacebookTokenAttribute($value)
-    {
-        $this->attributes['facebook_token'] = \Hash::make($value);
     }
 
     public function setNameAttribute($value)
@@ -81,5 +65,10 @@ class User extends Authenticatable
     public function subscribeOnEvents()
     {
         return $this->belongsToMany(Event::class);
+    }
+
+    public function data(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(UserData::class);
     }
 }

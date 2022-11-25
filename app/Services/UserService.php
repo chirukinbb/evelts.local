@@ -13,24 +13,49 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
-    public function auth(array $attrs)
+    public function auth(string $password, string $email)
     {
-        if (User::whereEmail($attrs['email'])->exists()) {
-            $this->registration($attrs);
+        $user = User::whereEmail($email)->first();
+
+        if (is_null($user)) {
+            $this->registration($email, $password);
         }
 
-        return $this->login($attrs);
+        return Hash::check($password, $user->password) ? $this->login($email) : false;
     }
 
-    protected function registration(array $attrs)
+    public function oAuth(int $type, string $token)
+    {
+        switch ($type) {
+            case User::FACEBOOK_AUTH:
+                $socialite_user = Socialite::driver('facebook')->userFromToken($token);
+                break;
+            case User::GOOGLE_AUTH:
+                $socialite_user = Socialite::driver('google')->userFromToken($token);
+                break;
+            default:
+        }
+
+        /**
+         * @var \Laravel\Socialite\Two\User $socialite_user
+         */
+        if (!User::whereEmail($socialite_user->email)->exists()) {
+            $this->registration($socialite_user->email);
+        }
+
+        return $this->login($socialite_user->email);
+    }
+
+    public function registration(string $email, string $password = '')
     {
         $user = User::getModel();
 
-        $user->password = $attrs['password'];
-        $user->email = $attrs['email'];
-        $user->name = $attrs['name'];
+        $password = empty($password) ? \Str::random(6) : $password;
+        $user->password = $password;
+        $user->email = $email;
 
         $user->save();
+        $user->assignRole('User');
 
         $slug = \Str::random(6);
         \DB::table('confirms')->insert([
@@ -38,53 +63,16 @@ class UserService
             'slug' => \Hash::make($slug)
         ]);
 
-        SendRegistratiobMail::dispatch($user, $attrs['password'], $slug);
+        SendRegistratiobMail::dispatch($user, $password, $slug);
 
         return $user;
     }
 
-    protected function addData(User $user, int $type, string $token)
+    protected function login(string $email)
     {
-        switch ($type) {
-            case User::FACEBOOK_AUTH:
-                $socialite_user = Socialite::driver('facebook')->userFromToken($token);
-                $user->facebook_token = $token;
-                break;
-            case User::GOOGLE_AUTH:
-                $socialite_user = Socialite::driver('google')->userFromToken($token);
-                $user->google_token = $token;
-                break;
-            default:
-        }
+        $user = User::whereEmail($email)->first();
 
-        $user->name = $socialite_user->getName();
-        $user->avatar_url = $socialite_user->getAvatar();
-        $user->save();
-    }
-
-    protected function login(array $attrs)
-    {
-        $user = User::whereEmail($attrs['email'])->first();
-
-        switch ($attrs['type']) {
-            case User::FACEBOOK_AUTH:
-                if (is_null($user->facebook_token))
-                    $this->addData($user, User::FACEBOOK_AUTH, $attrs['password']);
-
-                $isLogin = \Hash::check($attrs['password'], $user->facebook_token);
-                break;
-            case User::GOOGLE_AUTH:
-                if (is_null($user->google_token))
-                    $this->addData($user, User::GOOGLE_AUTH, $attrs['password']);
-
-                $isLogin = \Hash::check($attrs['password'], $user->google_token);
-                break;
-            default:
-                $isLogin = Auth::attempt($attrs, $attrs['remember_me'] ?? false);
-                $user = Auth::user();
-        }
-
-        return $isLogin ? $user : false;
+        return Auth::loginUsingId($user->id) ?? false;
     }
 
     public function confirm(string $email, string $slug)
@@ -105,11 +93,16 @@ class UserService
          * @var UploadedFile $avatar
          */
         $avatar = $attrs['avatar'];
-        return Auth::user()->update([
+
+        return Auth::user()->data->update([
             'avatar_url' => $avatar->storePublicly('avatars'),
-            'name' => $attrs['name'],
             'description' => $attrs['description']
         ]);
+    }
+
+    public function updateName(string $name)
+    {
+        Auth::user()->update(['name' => $name]);
     }
 
     public function changePassword(array $attrs)

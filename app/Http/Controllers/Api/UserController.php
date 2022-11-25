@@ -13,8 +13,11 @@ class UserController extends Controller
 {
     public function auth(AuthRequest $request)
     {
-        return ($user = User::auth($request->all())) ?
-            AuthResource::make($user) : response()->json(0, 403);
+        $user = $request->input('password') ? User::auth($request->input('password'), $request->input('email'))
+            : User::oAuth($request->input('type'), $request->input('token'));
+
+        return $user ? AuthResource::make($user) :
+            response()->json(0, 403);
     }
 
     public function update(UserDataRequest $request)

@@ -110,16 +110,14 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
- * @property string|null $description
- * @property string|null $avatar_url
  * @property string $email
  * @property string|null $email_verified_at
  * @property string $password
- * @property string|null $google_token
- * @property string|null $facebook_token
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserData[] $data
+ * @property-read int|null $data_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
@@ -136,13 +134,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatarUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFacebookToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGoogleToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
@@ -150,5 +144,25 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\UserData
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $description
+ * @property string|null $avatar_url
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAvatarUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUserId($value)
+ */
+	class UserData extends \Eloquent {}
 }
 

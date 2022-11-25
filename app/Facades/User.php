@@ -6,8 +6,10 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static UserResource auth(array $attrs)
+ * @method static UserResource oAuth(int $type, string $token)
+ * @method static UserResource registration(string $email, string $password = '')
  * @method static updateData(array $attrs)
+ * @method static updateName(string $name)
  * @method static confirm(string $email, string $slug)
  * @method static bool changePassword(array $attrs)
  * @method static bool changeEmailRequest(array $attrs)

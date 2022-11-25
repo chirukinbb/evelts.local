@@ -9,9 +9,10 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'=>'require|string',
-            'password'=>'require|string',
-            'type'=>'require|integer'
+            'email' => 'email',
+            'password' => 'string',
+            'token' => 'string',
+            'type' => 'integer'
         ];
     }
 }
