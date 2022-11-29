@@ -21,9 +21,11 @@ Route::get('admin/login', [\App\Http\Controllers\Admin\MainController::class, 'l
 Route::post('admin/loginAction', [\App\Http\Controllers\Admin\MainController::class, 'loginAction'])->name('admin.loginAction');
 
 Route::middleware(\App\Http\Middleware\AdminRoleChecker::class)->group(function () {
-    Route::get('admin', [\App\Http\Controllers\Admin\MainController::class, 'dashboard'])->name('admin.dashboard.index');
+    Route::get('admin', [\App\Http\Controllers\Admin\MainController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::resource('admin/events', \App\Http\Controllers\Admin\EventController::class)->names('admin.events');
     Route::resource('admin/users', \App\Http\Controllers\Admin\UserController::class)->names('admin.users');
     Route::resource('admin/categories', \App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
+
+    Route::get('admin/logout',[\App\Http\Controllers\Admin\MainController::class,'logout'])->name('admin.logout');
 });

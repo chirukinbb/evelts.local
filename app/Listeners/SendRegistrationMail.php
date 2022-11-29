@@ -1,22 +1,16 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Listeners;
 
 use App\Mail\RegistrationMail;
 use App\Models\User;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
-class SendRegistratiobMail implements ShouldQueue
+class SendRegistrationMail
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     /**
-     * Create a new job instance.
+     * Create the event listener.
      *
      * @return void
      */
@@ -30,11 +24,12 @@ class SendRegistratiobMail implements ShouldQueue
     }
 
     /**
-     * Execute the job.
+     * Handle the event.
      *
+     * @param  object  $event
      * @return void
      */
-    public function handle()
+    public function handle($event)
     {
         \Mail::to($this->user->email)->send(
             new RegistrationMail(

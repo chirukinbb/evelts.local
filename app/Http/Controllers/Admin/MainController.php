@@ -19,8 +19,16 @@ class MainController extends Controller
 
     public function loginAction(AdminLoginRequest $request)
     {
-        \Auth::attempt($request->only('email', 'password'), $request->input('rememberme'));
+        if (\Auth::attempt($request->only('email', 'password'), $request->input('rememberme')))
+            return redirect()->route('admin.dashboard');
+        else
+            return redirect()->route('admin.login')->withErrors('Wrong email/password pair');
+    }
 
-        return redirect()->route('admin.dashboard.index');
+    public function logout()
+    {
+        \Auth::logout();
+
+        return view('admin.login');
     }
 }

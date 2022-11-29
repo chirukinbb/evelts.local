@@ -7,6 +7,7 @@
 @extends('admin.layout')
 
 @section('content')
+    <x-alert-message/>
     <table class="table">
         <thead>
         <tr>

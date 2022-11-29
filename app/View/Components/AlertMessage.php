@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class AlertComponent extends Component
+class AlertMessage extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class AlertComponent extends Component
      */
     public function render()
     {
-        return view('components.alert-component');
+        return view('components.alert-message');
     }
 }
