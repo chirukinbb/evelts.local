@@ -20,15 +20,11 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        \App\Facades\User::registration($request->input('email'));
+        return is_a(\App\Facades\User::registration($request->input('email')), User::class) ?
+            view('admin.users.index')->with(['message' => 'Success! User created']) :
+            view('admin.users.index')->with(['error' => 'Something went wrong...']);
     }
 
     /**

@@ -40,17 +40,18 @@ class UserService
          * @var \Laravel\Socialite\Two\User $socialite_user
          */
         if (!User::whereEmail($socialite_user->email)->exists()) {
-            $this->registration($socialite_user->email);
+            $this->registration($socialite_user->email, null, $socialite_user->name);
         }
 
         return $this->login($socialite_user->email);
     }
 
-    public function registration(string $email, string $password = '')
+    public function registration(string $email, string $password = '', string $name = '')
     {
         $user = User::getModel();
 
         $password = empty($password) ? \Str::random(6) : $password;
+        $user->name = empty($name) ? $name : \Arr::first(explode('@', $email));
         $user->password = $password;
         $user->email = $email;
 
@@ -87,14 +88,15 @@ class UserService
         }
     }
 
-    public function updateData(array $attrs)
+    public function updateData(array $attrs, $userId = 0)
     {
+        $user = ($userId === 0) ? Auth::user() : User::find($userId);
         /**
          * @var UploadedFile $avatar
          */
         $avatar = $attrs['avatar'];
 
-        return Auth::user()->data->update([
+        return $user->data->update([
             'avatar_url' => $avatar->storePublicly('avatars'),
             'description' => $attrs['description']
         ]);

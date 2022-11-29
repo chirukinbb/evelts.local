@@ -35,11 +35,6 @@ class User extends Authenticatable
         $this->attributes['password'] = \Hash::make($value);
     }
 
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = $value ?? \Arr::first(explode('@', $this->attributes['email']));
-    }
-
     public function friends()
     {
         $firstUsers = $this->hasMany('relations', 'first_user_id', 'id')

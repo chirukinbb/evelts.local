@@ -21,6 +21,6 @@ class MainController extends Controller
     {
         \Auth::attempt($request->only('email', 'password'), $request->input('rememberme'));
 
-        return redirect()->route('admin.dashboard');
+        return redirect()->route('admin.dashboard.index');
     }
 }
