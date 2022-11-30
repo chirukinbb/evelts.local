@@ -22,9 +22,9 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        return is_a(\App\Facades\User::registration($request->input('email')), User::class) ?
-            view('admin.users.index')->with(['message' => 'Success! User created']) :
-            view('admin.users.index')->with(['error' => 'Something went wrong...']);
+        return is_array(\App\Facades\User::registration($request->input('email')),) ?
+            redirect()->route('admin.users.index')->with(['success' => 'Success! User created']) :
+            redirect()->route('admin.users.index')->with(['error' => 'Something went wrong...']);
     }
 
     /**
@@ -57,14 +57,10 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        User::whereId($id)->delete();
+
+        return redirect()->route('admin.users.index')->with(['message'=>'User was deleted']);
     }
 }

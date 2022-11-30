@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\SendRegistratiobMail;
-use App\Mail\ChangeEmailMail;
+use App\Mails\ChangeEmailMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
@@ -13,17 +13,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
-    public function auth(string $password, string $email)
-    {
-        $user = User::whereEmail($email)->first();
-
-        if (is_null($user)) {
-            $this->registration($email, $password);
-        }
-
-        return Hash::check($password, $user->password) ? $this->login($email) : false;
-    }
-
     public function oAuth(int $type, string $token)
     {
         switch ($type) {
@@ -51,7 +40,7 @@ class UserService
         $user = User::getModel();
 
         $password = empty($password) ? \Str::random(6) : $password;
-        $user->name = empty($name) ? $name : \Arr::first(explode('@', $email));
+        $user->name = empty($name) ? \Arr::first(explode('@', $email)) : $name;
         $user->password = $password;
         $user->email = $email;
 
@@ -64,16 +53,14 @@ class UserService
             'slug' => \Hash::make($slug)
         ]);
 
-        SendRegistratiobMail::dispatch($user, $password, $slug);
-
-        return $user;
+        return compact('user','password','slug');
     }
 
     protected function login(string $email)
     {
         $user = User::whereEmail($email)->first();
 
-        return Auth::loginUsingId($user->id) ?? false;
+        return Auth::loginUsingId($user->id);
     }
 
     public function confirm(string $email, string $slug)

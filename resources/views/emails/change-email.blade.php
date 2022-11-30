@@ -5,7 +5,7 @@
 ?>
 <table>
     <tr>
-        <th>Dear {{$user->name}},</th>
+        <th style="text-align: left">Dear {{$user->name}},</th>
     </tr>
     <tr>
         <td>

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\UserRegister;
+use App\Events\UserRegisterEvent;
 use App\Listeners\SendRegistrationMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Event;
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        UserRegister::class=>[
+        UserRegisterEvent::class=>[
             SendRegistrationMail::class
         ]
     ];

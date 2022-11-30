@@ -2,22 +2,30 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\UserRegisterEvent;
 use App\Facades\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\UserDataRequest;
 use App\Http\Requests\UserPasswordRequest;
 use App\Http\Resources\AuthResource;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function auth(AuthRequest $request)
     {
-        $user = $request->input('password') ? User::auth($request->input('password'), $request->input('email'))
-            : User::oAuth($request->input('type'), $request->input('token'));
+        $user = \App\Models\User::whereEmail($request->input('email'))->first();
 
-        return $user ? AuthResource::make($user) :
-            response()->json(0, 403);
+        if (is_null($user)) {
+            list($user, $password, $slug) = $this->registration($request->input('email'), $request->input('password'));
+
+            UserRegisterEvent::dispatch($user, $password, $slug);
+        }
+
+        return $request->input('password') ?
+            (Hash::check($request->input('password'), $user->password) ? AuthResource::make(User::login($request->input('email'))) : response()->json(0, 403)) :
+            AuthResource::make(User::login($request->input('email')));
     }
 
     public function update(UserDataRequest $request)

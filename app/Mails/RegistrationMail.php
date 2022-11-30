@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mails;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ChangeEmailMail extends Mailable
+class RegistrationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,7 +17,11 @@ class ChangeEmailMail extends Mailable
      *
      * @return void
      */
-    public function __construct(public User $user, public string $code)
+    public function __construct(
+        public User $user,
+        public string $password,
+        public string $slug
+    )
     {
         //
     }
@@ -28,6 +33,6 @@ class ChangeEmailMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.change-email');
+        return $this->view('emails.registration');
     }
 }

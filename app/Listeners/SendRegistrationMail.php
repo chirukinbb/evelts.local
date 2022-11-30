@@ -2,38 +2,27 @@
 
 namespace App\Listeners;
 
-use App\Mail\RegistrationMail;
-use App\Models\User;
+use App\Events\UserRegisterEvent;
+use App\Mails\RegistrationMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class SendRegistrationMail
+class SendRegistrationMail implements ShouldQueue
 {
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(
-        protected User $user,
-        protected string $password,
-        protected string $slug
-    )
+    public function __construct()
     {
         //
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
-     */
-    public function handle($event)
+    public function handle(UserRegisterEvent $event)
     {
-        \Mail::to($this->user->email)->send(
+        \Mail::to($event->user->email)->send(
             new RegistrationMail(
-                $this->user,$this->password,$this->slug
+                $event->user,$event->password,$event->slug
             )
         );
     }
