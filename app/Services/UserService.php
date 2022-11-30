@@ -85,7 +85,7 @@ class UserService
         $avatar = $attrs['avatar'];
 
         return $user->data->update([
-            'avatar_url' => $avatar->storePublicly('avatars'),
+            'avatar_url' => $avatar->store('avatars','public'),
             'description' => $attrs['description']
         ]);
     }

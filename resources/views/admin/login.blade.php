@@ -3,15 +3,6 @@
 @section('content')
     <form action="{{route('admin.loginAction')}}" method="POST" class="col-8 pt-3">
         <x-form-message :errors="$errors"/>
-        @if ($errors->any())
-            <div class="alert alert-danger m-0 p-0">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li class="d-block">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         <input name="email" type="email" class="form-control mb-3" placeholder="Email">
         <input type="password" name="password" class="form-control mb-3" placeholder="Password">
         <input type="hidden" name="rememberme" value="0">

@@ -22,13 +22,11 @@
                 border-radius: 50%;
                 background-size: cover;
                 background-position: center;
+                background-image: url("{{asset($user->data->avatar_url)}}");
             }
         </style>
         <div class="avatar-container d-flex justify-content-center">
-            <div class="avatar"
-                 @if($user->data->avatar_url) style="background-image: url("{{asset('avatars/'.$user->data->avatar_url)}}
-            ")" @endif >
-        </div>
+            <div class="avatar"></div>
         </div>
         <h3 class="text-center">{{$user->name}}</h3>
         <b class="mb-3 d-block text-center">{{$user->email}}</b>
