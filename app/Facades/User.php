@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \App\Models\User login(string $email)
  * @method static array registration(string $email, string $password = '')
- * @method static updateData(array $attrs)
+ * @method static updateData(array $attrs, int $id = 0)
  * @method static updateName(string $name)
  * @method static confirm(string $email, string $slug)
  * @method static bool changePassword(array $attrs)

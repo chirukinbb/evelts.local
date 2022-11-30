@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserDataRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -45,22 +46,17 @@ class UserController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(UserDataRequest $request, $id)
     {
-        //
+        \App\Facades\User::updateData($request->full(), $id);
+
+        return redirect()->route('admin.users.index')->with('message', 'User data updated');
     }
 
     public function destroy($id)
     {
         User::whereId($id)->delete();
 
-        return redirect()->route('admin.users.index')->with(['message'=>'User was deleted']);
+        return redirect()->route('admin.users.index')->with(['message' => 'User was deleted']);
     }
 }

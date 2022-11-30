@@ -46,6 +46,7 @@ class UserService
 
         $user->save();
         $user->assignRole('User');
+        $user->data()->create();
 
         $slug = \Str::random(6);
         \DB::table('confirms')->insert([
@@ -53,7 +54,7 @@ class UserService
             'slug' => \Hash::make($slug)
         ]);
 
-        return compact('user','password','slug');
+        return compact('user', 'password', 'slug');
     }
 
     protected function login(string $email)

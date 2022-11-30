@@ -2,6 +2,7 @@
 
 @section('content')
     <form action="{{route('admin.loginAction')}}" method="POST" class="col-8 pt-3">
+        <x-form-message :errors="$errors"/>
         @if ($errors->any())
             <div class="alert alert-danger m-0 p-0">
                 <ul>
