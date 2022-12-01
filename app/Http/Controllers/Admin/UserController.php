@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\RegistrationRequest;
 use App\Http\Requests\UserDataRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -21,7 +21,7 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    public function store(Request $request)
+    public function store(RegistrationRequest $request)
     {
         return is_array(\App\Facades\User::registration($request->input('email')),) ?
             redirect()->route('admin.users.index')->with(['success' => 'Success! User created']) :

@@ -78,16 +78,15 @@ class UserService
 
     public function updateData(array $attrs, $userId = 0)
     {
-        $user = ($userId === 0) ? Auth::user() : User::find($userId);
         /**
-         * @var UploadedFile $avatar
+         * @var UploadedFile $attrs ['avatar']
          */
-        $avatar = $attrs['avatar'];
+        $user = ($userId === 0) ? Auth::user() : User::find($userId);
 
-        return $user->data->update([
-            'avatar_url' => $avatar->storePubliclyAs('avatars',$user->id.'.'.$avatar->extension(),'public'),
-            'description' => $attrs['description']
-        ]);
+        return $user->data->update(array_merge(
+            isset($attrs['avatar']) ? ['avatar_url' => $attrs['avatar']->storePubliclyAs('avatars', $user->id . '.' . $attrs['avatar']->extension(), 'public')] : [],
+            ['description' => $attrs['description']]
+        ));
     }
 
     public function updateName(string $name)
