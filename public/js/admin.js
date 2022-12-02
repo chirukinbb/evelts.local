@@ -20,11 +20,13 @@
     })
 
     $('.createEvent').on('click', function (e) {
-        const search = $(this).val(),
+        const search = $('input[name=address]').val(),
             addresses = []
 
         e.preventDefault()
         $(this).addClass('disable').attr('disable', true)
+        $('.multitudes').addClass('d-none')
+        $('.multitudes select').html('')
 
         $.get('https://api.tomtom.com/search/2/geocode/' + search + '.json?key=7NebNXQwwqgaSGZJGt0uhUnIBwrneGu8').then(r => {
             console.log(r)
@@ -33,28 +35,37 @@
                     fullAddressParts = [country, municipalitySubdivision, streetName, streetNumber],
                     filteredAddressPart = []
 
-                fullAddressParts.map(el => {
-                    if (el !== undefined)
-                        filteredAddressPart.push(el)
-                })
-
                 addresses.push(filteredAddressPart.join(' '))
+
+                switch (r.results.length) {
+                    case 0:
+                        alert('Write another address of this place!')
+                        $(this).removeClass('disable').attr('disable', false)
+                        break
+                    case 1:
+                        if (window.confirm('Do you mean this address?\n ' + addresses[0])) {
+                            $('form').submit()
+                        }
+                        break
+                    default:
+                        fullAddressParts.map(el => {
+                            if (el !== undefined)
+                                filteredAddressPart.push(el)
+                        })
+
+                        addresses.map(address => {
+                            const option = document.createElement('option')
+
+                            $(option).val(address)
+                            $(option).text(address)
+
+                            $('.multitudes select').append(option)
+                        })
+
+                        $('.multitudes').removeClass('d-none')
+                        $(this).removeClass('disable').attr('disable', false)
+                }
             })
-
-            switch (addresses.length) {
-                case 0:
-                    alert('Write another address of this place!')
-                    $(this).removeClass('disable').attr('disable', false)
-                    break
-                case 1:
-                    if (window.confirm('Do you mean this address?\n ' + addresses)) {
-                        $('form').submit()
-                    }
-                    break
-                default:
-            }
-
-
         })
     })
 })(jQuery)

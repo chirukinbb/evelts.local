@@ -20,6 +20,7 @@
         <div class="row mb-3">
             <div class="col-6">
                 <select name="user_id" class="col-6 form-control">
+                    <option disabled>-- Choose author --</option>
                     @foreach($users as $user)
                         <option value="{{$user->id}}">{{$user->name}}</option>
                     @endforeach
@@ -27,13 +28,19 @@
             </div>
             <div class="col-6">
                 <select name="category_id" class="col-6 form-control">
+                    <option disabled>-- Choose category --</option>
                     @foreach($categories as $category)
                         <option value="{{$category->id}}">{{$category->title}}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-        <input type="text" class="form-control mb-3 autocomplete" name="address" placeholder="Enter address">
+        <input type="text" class="form-control mb-3" name="address" placeholder="Enter address">
+        <div class="d-none multitudes  mb-3">
+            <select name="coordinates" class="col-6 form-control">
+                <option disabled>-- Choose address --</option>
+            </select>
+        </div>
         <button class="btn btn-primary w-100 createEvent">Save</button>
     </form>
 @endsection
