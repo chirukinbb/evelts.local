@@ -11,11 +11,6 @@
         <x-form-message :errors="$errors"/>
         @csrf
         <style>
-            .avatar-container {
-                display: flex;
-                justify-content: center;
-            }
-
             .avatar {
                 width: 100px;
                 height: 100px;
@@ -38,14 +33,5 @@
         <textarea rows="5" class="form-control mb-3" name="description"
                   placeholder="User story">{{$user->data->description}}</textarea>
         <button class="btn btn-primary w-100">Save</button>
-        <script>
-            document.querySelector('input[type=file]').onchange = function (event) {
-                if (event.target.files.length > 0) {
-                    var src = URL.createObjectURL(event.target.files[0]);
-
-                    document.querySelector('.avatar').style.backgroundImage = 'url(' + src + ')'
-                }
-            }
-        </script>
     </form>
 @endsection

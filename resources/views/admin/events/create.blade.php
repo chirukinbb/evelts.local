@@ -33,20 +33,7 @@
                 </select>
             </div>
         </div>
-        <button class="btn btn-primary w-100">Save</button>
-        <script>
-            document.querySelector('input[type=file]').onchange = function (event) {
-                if (event.target.files.length > 0) {
-                    var src = URL.createObjectURL(event.target.files[0]),
-                        image = new Image()
-
-                    image.classList.add('img-fluid')
-                    image.classList.add('w-100')
-                    image.src = src
-
-                    document.querySelector('.thumbnail').innerHTML = image.outerHTML
-                }
-            }
-        </script>
+        <input type="text" class="form-control mb-3 autocomplete" name="address" placeholder="Enter address">
+        <button class="btn btn-primary w-100 createEvent">Save</button>
     </form>
 @endsection
