@@ -45,7 +45,7 @@
             </div>
         </div>
         <x-form.address-input/>
-        <button class="btn btn-primary w-100 disabled" disabled>Save</button>
+        <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
     </form>
 @endsection
 
@@ -54,8 +54,8 @@
         (function ($) {
             $('input[type=file]').on('change', function (event) {
                 if (event.target.files.length > 0) {
-                    var src = URL.createObjectURL(event.target.files[0]),
-                        image = new Image()
+                    const src = URL.createObjectURL(event.target.files[0]),
+                        image = new Image();
 
                     if ($('.thumbnail').length) {
                         $(image).addClass('img-fluid')
@@ -68,17 +68,38 @@
                     if ($('.avatar').length) {
                         $('.avatar').css('background-image', 'url(' + src + ')')
                     }
-                }
 
-                $('form').dispatchEvent(new Event('check-form'))
+                    $('form')[0].dispatchEvent(new Event('check-form'))
+                }
             })
 
             $('form').on('check-form focusout', function () {
-                $(this).find('.validation').each(function (i, el) {
-                    if ($(el).data('error') === '1' || $(el).val().length === 0)
-                        $(el).addClass('border-danger')
-                })
+                if (validated() === 0)
+                    $(this).find('button').removeClass('disabled').attr('disabled',false)
             })
+
+            $('form').find('button[type=submit]').on('click',function (e) {
+                if (validated()) {
+                    e.preventDefault()
+
+                    $('.validation').each(function (i, el) {
+                        if ($(el).data('error') === '1' || $(el).val().length === 0)
+                            $(el).addClass('border-danger')
+                    })
+                }
+            })
+
+            function validated() {
+                let input = 0
+
+                $('.validation').each(function (i, el) {
+                    console.log(el,$(el).data('error'))
+                    if ($(el).data('error') === '1' || $(el).val().length === 0)
+                        input ++
+                })
+
+                return input
+            }
         })(jQuery)
     </script>
 @endsection

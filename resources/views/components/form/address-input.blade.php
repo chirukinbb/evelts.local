@@ -1,7 +1,7 @@
-<div class="address-section">
+<div class="address-section validation" data-error="1">
     <div class="row">
         <div class="col-auto flex-grow-1">
-            <input type="text" class="form-control mb-3 validation" data-error="1" name="address"
+            <input type="text" class="form-control mb-3" name="address"
                    placeholder="Enter address">
         </div>
         <div class="col-auto">
@@ -32,7 +32,7 @@
                     $(this).find('button.check').addClass('disabled')
                         .attr('disabled', true)
 
-                    $('.address-section').find('input').attr('data-error', 1)
+                    $('.address-section').attr('data-error', 1)
                 }
 
                 $(this).find('button.check').addClass('btn-secondary')
@@ -43,7 +43,7 @@
             }
 
             if (event.target.matches('button.check')) {
-                $.get('https://api.tomtom.com/search/2/geocode/' + address + '.json?key={{env('tom_tom_geocoding_api_key')}}7NebNXQwwqgaSGZJGt0uhUnIBwrneGu8').then(r => {
+                $.get('https://api.tomtom.com/search/2/geocode/' + address + '.json?key={{env('TOM_TOM_GEOCODING_API_KEY')}}').then(r => {
 
                     switch (r.results.length) {
                         case 0:
@@ -102,7 +102,7 @@
             function renderMap(coordinates) {
                 const map = tt.map({
                     container: 'map-container',
-                    key: '{{env('tom_tom_geocoding_api_key')}}',
+                    key: '{{env('TOM_TOM_GEOCODING_API_KEY')}}',
                     center: coordinates,
                     zoom: 15
                 })
@@ -110,9 +110,10 @@
                 new tt.Marker().setLngLat(coordinates).addTo(map);
 
                 $('#map-container').css('height', 400)
-                $('.address-section').find('input').attr('data-error', 0)
+                $('#map-container').addClass('mb-3')
+                $('.address-section').attr('data-error', 0)
 
-                $('form').dispatchEvent(new Event('check-form'))
+                $('form')[0].dispatchEvent(new Event('check-form'))
             }
         })
     })(jQuery, tt)
