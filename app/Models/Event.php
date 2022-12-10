@@ -18,8 +18,8 @@ class Event extends Model
         'description',
         'coordinate_lat',
         'coordinate_lng',
-        'country',
-        'city',
+        'country_id',
+        'point_id',
         'planing_time',
         'is_happened',
         'slots'
@@ -28,6 +28,21 @@ class Event extends Model
     public function category()
     {
         return $this->hasOne(Category::class);
+    }
+
+    public function country()
+    {
+        return $this->hasOne(Country::class);
+    }
+
+    public function point()
+    {
+        return $this->hasOne(Point::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 
     public function author()

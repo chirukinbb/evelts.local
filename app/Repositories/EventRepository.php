@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Repositories;
 
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
 use yidas\googleMaps\Client;
+use function dd;
+use function env;
 
-class EventService
+class EventRepository
 {
     public function select(array $attrs)
     {

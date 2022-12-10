@@ -28,4 +28,7 @@ Route::middleware(\App\Http\Middleware\AdminRoleChecker::class)->group(function 
     Route::resource('admin/categories', \App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
 
     Route::get('admin/logout',[\App\Http\Controllers\Admin\MainController::class,'logout'])->name('admin.logout');
+    Route::get('t',function (){
+
+    });
 });

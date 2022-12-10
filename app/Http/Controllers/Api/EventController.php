@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EventListRequest;
 use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventResource;
-use App\Services\EventService;
+use App\Repositories\EventRepository;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    public function __construct(protected EventService $service)
+    public function __construct(protected EventRepository $service)
     {
     }
 

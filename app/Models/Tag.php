@@ -12,4 +12,9 @@ class Tag extends Model
     public $timestamps = false;
 
     protected $fillable = ['name'];
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
 }
