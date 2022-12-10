@@ -44,4 +44,9 @@ class Event extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function gallery()
+    {
+        return $this->hasMany(Photo::class);
+    }
 }

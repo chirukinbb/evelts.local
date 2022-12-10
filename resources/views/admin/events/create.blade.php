@@ -23,7 +23,7 @@
             Upload thumbnail
             <input type="file" class="form-control mb-3 validation" name="thumbnail" accept="image/jpeg, image/png">
         </label>
-        <input type="email" class="form-control mb-3" name="title" placeholder="Title">
+        <input type="email" class="form-control mb-3 validation" name="title" placeholder="Title">
         <textarea rows="5" class="form-control mb-3 validation" name="description"
                   placeholder="Event legend"></textarea>
         <div class="row mb-3">
@@ -63,6 +63,8 @@
                         $(image).attr('src', src)
 
                         $('.thumbnail').html(image.outerHTML)
+
+                        $('form')[0].dispatchEvent(new Event('check-form'))
                     }
 
                     if ($('.avatar').length) {
@@ -76,6 +78,8 @@
             $('form').on('check-form focusout', function () {
                 if (validated() === 0)
                     $(this).find('button').removeClass('disabled').attr('disabled',false)
+                else
+                    $(this).find('button').addClass('disabled').attr('disabled',true)
             })
 
             $('form').find('button[type=submit]').on('click',function (e) {
@@ -83,7 +87,7 @@
                     e.preventDefault()
 
                     $('.validation').each(function (i, el) {
-                        if ($(el).data('error') === '1' || $(el).val().length === 0)
+                        if ($(el).attr('data-error') === '1' || ($(el).hasClass('form-control') && $(el).val().length === 0))
                             $(el).addClass('border-danger')
                     })
                 }
@@ -93,10 +97,10 @@
                 let input = 0
 
                 $('.validation').each(function (i, el) {
-                    console.log(el,$(el).data('error'))
-                    if ($(el).data('error') === '1' || $(el).val().length === 0)
+                    if ($(el).attr('data-error') === '1' || ($(el).hasClass('form-control') && $(el).val().length === 0))
                         input ++
                 })
+                console.log(input)
 
                 return input
             }

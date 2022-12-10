@@ -21,7 +21,7 @@
     (function ($, tt) {
         $('.address-section').on('click keyup change', function (event) {
             event.preventDefault()
-
+            console.log('+++')
             const address = $(this).find('input[name=address]').val()
 
             if (event.target.matches('input[name=address]')) {
