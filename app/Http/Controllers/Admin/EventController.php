@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EventRequest;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\User;
@@ -28,20 +29,18 @@ class EventController extends Controller
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(EventRequest $request)
     {
-        $http = \Http::withHeaders(['Referer' => route('home')])->get(
-            sprintf('https://api.tomtom.com/search/2/geocode/%s.json', $request->get('address')),
+        $response = \Http::withHeaders(['Referer' => route('home')])->get(
+            sprintf('https://api.tomtom.com/search/2/geocode/%s.json', 'прилуки ветеранская 28'/*$request->address*/),
             ['key' => env('TOM_TOM_GEOCODING_API_KEY')]
         );
+dd(json_decode($response->body()));
+     //   list($address) = json_decode($response->body());
 
-        dd(json_decode($http->body()));
+        $eventModel = Event::getModel();
+
+
     }
 
     /**
