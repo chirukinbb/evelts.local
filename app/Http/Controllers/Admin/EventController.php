@@ -22,7 +22,7 @@ class EventController extends Controller
         $categories = Category::all();
         $users = User::all();
 
-        return view('admin.events.create',compact(
+        return view('admin.events.create', compact(
             'users',
             'categories'
         ));
@@ -36,7 +36,12 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $http = \Http::withHeaders(['Referer' => route('home')])->get(
+            sprintf('https://api.tomtom.com/search/2/geocode/%s.json', $request->get('address')),
+            ['key' => env('TOM_TOM_GEOCODING_API_KEY')]
+        );
+
+        dd(json_decode($http->body()));
     }
 
     /**

@@ -48,22 +48,23 @@ class EventService
 
     public function create(array $attrs)
     {
-        $event = Event::getModel();
+//        $event = Event::getModel();
+//
+//        $event->title = $attrs['title'];
+//        $event->description = $attrs['description'];
+//        $event->thumbnail_url = $attrs['thumbnail']->storePublic('events');
+//        $event->user_id = \Auth::id();
+//        $event->category_id = Category::whereTitle($attrs['description'])->first()->id;
+//        $event->coordinate_lat = $attrs['coordinate_lat'];
+//        $event->coordinate_lng = $attrs['coordinate_lng'];
+//        $event->planing_time = $attrs['planing_time'];
 
-        $event->title = $attrs['title'];
-        $event->description = $attrs['description'];
-        $event->thumbnail_url = $attrs['thumbnail']->storePublic('events');
-        $event->user_id = \Auth::id();
-        $event->category_id = Category::whereTitle($attrs['description'])->first()->id;
-        $event->coordinate_lat = $attrs['coordinate_lat'];
-        $event->coordinate_lng = $attrs['coordinate_lng'];
-        $event->planing_time = $attrs['planing_time'];
+        $http = \Http::get(
+            'https://api.tomtom.com/search/2/geocode/' . $attrs['address'] . '.json',
+            ['params' => ['key' => env('TOM_TOM_GEOCODING_API_KEY')]]
+        );
 
-        $client = new Client(['key' => env('GOOGLE_CLIENT_ID')]);
-        $place = $client->reverseGeocode([
-            $attrs['coordinate_lat'], $attrs['coordinate_lng']
-        ]);
-        dd($place);
+        dd($http->body());
     }
 
     public function update(array $attrs)

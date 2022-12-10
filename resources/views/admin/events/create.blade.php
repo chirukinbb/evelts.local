@@ -23,7 +23,7 @@
             Upload thumbnail
             <input type="file" class="form-control mb-3 validation" name="thumbnail" accept="image/jpeg, image/png">
         </label>
-        <input type="email" class="form-control mb-3 validation" name="title" placeholder="Title">
+        <input type="text" class="form-control mb-3 validation" name="title" placeholder="Title">
         <textarea rows="5" class="form-control mb-3 validation" name="description"
                   placeholder="Event legend"></textarea>
         <div class="row mb-3">
@@ -45,7 +45,9 @@
             </div>
         </div>
         <x-form.address-input/>
-        <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
+        <div class="submit">
+            <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
+        </div>
     </form>
 @endsection
 
@@ -77,20 +79,9 @@
 
             $('form').on('check-form focusout', function () {
                 if (validated() === 0)
-                    $(this).find('button').removeClass('disabled').attr('disabled',false)
+                    $(this).find('button[type=submit]').removeClass('disabled').attr('disabled', false)
                 else
-                    $(this).find('button').addClass('disabled').attr('disabled',true)
-            })
-
-            $('form').find('button[type=submit]').on('click',function (e) {
-                if (validated()) {
-                    e.preventDefault()
-
-                    $('.validation').each(function (i, el) {
-                        if ($(el).attr('data-error') === '1' || ($(el).hasClass('form-control') && $(el).val().length === 0))
-                            $(el).addClass('border-danger')
-                    })
-                }
+                    $(this).find('button[type=submit]').addClass('disabled').attr('disabled', true)
             })
 
             function validated() {
@@ -98,9 +89,8 @@
 
                 $('.validation').each(function (i, el) {
                     if ($(el).attr('data-error') === '1' || ($(el).hasClass('form-control') && $(el).val().length === 0))
-                        input ++
+                        input++
                 })
-                console.log(input)
 
                 return input
             }

@@ -21,7 +21,7 @@
     (function ($, tt) {
         $('.address-section').on('click keyup change', function (event) {
             event.preventDefault()
-            console.log('+++')
+
             const address = $(this).find('input[name=address]').val()
 
             if (event.target.matches('input[name=address]')) {
@@ -40,11 +40,15 @@
                     .text('Check address')
 
                 $(this).find('p').text('')
+
+                if (event.type === 'click') {
+                    $('.address-section').attr('data-error', 1)
+                    $('form')[0].dispatchEvent(new Event('check-form'))
+                }
             }
 
             if (event.target.matches('button.check')) {
                 $.get('https://api.tomtom.com/search/2/geocode/' + address + '.json?key={{env('TOM_TOM_GEOCODING_API_KEY')}}').then(r => {
-
                     switch (r.results.length) {
                         case 0:
                             $(this).find('p').text('Error! Try to type another address of this place')

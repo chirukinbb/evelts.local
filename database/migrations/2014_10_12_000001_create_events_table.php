@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->string('description');
             $table->string('coordinate_lat');
             $table->string('coordinate_lng');
-            $table->string('country');
-            $table->string('city');
+            $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('point_id');
             $table->string('planing_time');
             $table->integer('slots');
             $table->timestamp('is_happened');
@@ -33,6 +33,10 @@ return new class extends Migration {
                 ->on('users')->onDelete('cascade');
             $table->foreign('category_id')->references('id')
                 ->on('categories')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')
+                ->on('countries')->onDelete('cascade');
+            $table->foreign('point_id')->references('id')
+                ->on('points')->onDelete('cascade');
         });
     }
 
