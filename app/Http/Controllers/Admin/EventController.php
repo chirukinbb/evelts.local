@@ -7,6 +7,7 @@ use App\Http\Requests\EventRequest;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\User;
+use App\Repositories\GeoRepository;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -31,16 +32,22 @@ class EventController extends Controller
 
     public function store(EventRequest $request)
     {
-        $response = \Http::withHeaders(['Referer' => route('home')])->get(
-            sprintf('https://api.tomtom.com/search/2/geocode/%s.json', 'прилуки ветеранская 28'/*$request->address*/),
-            ['key' => env('TOM_TOM_GEOCODING_API_KEY')]
-        );
-dd(json_decode($response->body()));
-     //   list($address) = json_decode($response->body());
+        $address = new GeoRepository($request->address);
+        $address->geocoding();
 
         $eventModel = Event::getModel();
 
+        $eventModel->title = $request->title;
+        $eventModel->description = $request->description;
+        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('events/thumbnails');
+        $eventModel->category_id = $request->category_id;
+        $eventModel->country_id = $address->country_id;
+        $eventModel->point_id = $address->point_id;
+        $eventModel->coordinate_lat = $address->lat;
+        $eventModel->coordinate_lng = $address->lng;
+        $eventModel->planing_time = $request->planing_time->timestamp;
 
+        $eventModel->save();
     }
 
     /**
