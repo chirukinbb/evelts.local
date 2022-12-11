@@ -45,6 +45,22 @@
             </div>
         </div>
         <x-form.address-input/>
+        <div class="row mb-3">
+            <div class="col-4">
+                <input type="number" class="form-control integer" placeholder="Event slots" name="slots">
+            </div>
+            <div class="col-4">
+                <input type="text" class="form-control" id="datepicker" placeholder="Date & time of event">
+                <input type="hidden" name="date">
+            </div>
+            <div class="col-4">
+                <select id="timepicker" class="form-control">
+                    @for($i = 0;$i < 24;$i ++)
+                        <option value="{{$i > 9 ? $i : '0'.$i}}:00:00">{{$i > 9 ? $i : '0'.$i}}:00</option>
+                    @endfor
+                </select>
+            </div>
+        </div>
         <div class="submit">
             <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
         </div>
@@ -82,6 +98,26 @@
                     $(this).find('button[type=submit]').removeClass('disabled').attr('disabled', false)
                 else
                     $(this).find('button[type=submit]').addClass('disabled').attr('disabled', true)
+            })
+
+            $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'})
+
+            $('#datepicker,#timepicker').on('input change',function () {
+                let date = $('#datepicker').datepicker('getDate'),
+                    time = $('#timepicker').val(),
+                    timestamp = Date.parse(date)//.toString()
+                console.log(date.setHours(22))
+
+                $('input[name=date]').val(timestamp)
+            })
+
+            Date.prototype.addHours = function(h) {
+                this.setTime(this.getTime() + (h*60*60*1000));
+                return this;
+            }
+
+            $('.integer').on('keyup',function () {
+                $(this).val(parseInt($(this).val()))
             })
 
             function validated() {

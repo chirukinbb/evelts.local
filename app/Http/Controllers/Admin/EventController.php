@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\User;
 use App\Repositories\GeoRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -45,7 +46,7 @@ class EventController extends Controller
         $eventModel->point_id = $address->point_id;
         $eventModel->coordinate_lat = $address->lat;
         $eventModel->coordinate_lng = $address->lng;
-        $eventModel->planing_time = $request->planing_time->timestamp;
+        $eventModel->planing_time = $request->planing_time;
 
         $eventModel->save();
     }

@@ -16,7 +16,7 @@ use Illuminate\Validation\Rules\File;
  * @property int $slots
  * @property int|null $user_id
  * @property string[] $tags
- * @property Carbon $planing_time
+ * @property int $planing_time
  */
 class EventRequest extends FormRequest
 {
@@ -34,6 +34,7 @@ class EventRequest extends FormRequest
             'user_id'=>'numeric',
             'slots'=>'numeric',
             'tags'=>'array',
+            'planing_time'=>'required|numeric'
         ];
     }
 }
