@@ -18,14 +18,15 @@ return new class extends Migration {
             $table->unsignedBigInteger('category_id');
             $table->string('title');
             $table->string('thumbnail_url');
-            $table->string('description');
+            $table->string('address');
+            $table->text('description');
             $table->string('coordinate_lat');
             $table->string('coordinate_lng');
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('point_id');
             $table->string('planing_time');
             $table->integer('slots');
-            $table->timestamp('is_happened');
+            $table->integer('is_happened')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EventListRequest;
 use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventResource;
+use App\Models\Event;
 use App\Repositories\EventRepository;
+use App\Repositories\GeoRepository;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -27,9 +29,27 @@ class EventController extends Controller
 
     public function create(EventRequest $request)
     {
-        $this->service->create($request->full());
+        $address = new GeoRepository($request->address);
+        $address->geocoding();
 
-        return response()->json();
+        $eventModel = Event::getModel();
+
+        $eventModel->title = $request->title;
+        $eventModel->description = $request->description;
+        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('events/thumbnails');
+        $eventModel->address = $request->address;
+        $eventModel->category_id = $request->category_id;
+        $eventModel->planing_time = $request->planing_time;
+        $eventModel->user_id = \Auth::id();
+        $eventModel->slots = $request->slots;
+        $eventModel->country_id = $address->country_id;
+        $eventModel->point_id = $address->point_id;
+        $eventModel->coordinate_lat = $address->lat;
+        $eventModel->coordinate_lng = $address->lng;
+
+        $eventModel->save();
+
+        return EventResource::make($eventModel);
     }
 
     public function update(EventRequest $request)

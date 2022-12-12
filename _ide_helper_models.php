@@ -78,6 +78,7 @@ namespace App\Models{
  * @property int $category_id
  * @property string $title
  * @property string $thumbnail_url
+ * @property string $address
  * @property string $description
  * @property string $coordinate_lat
  * @property string $coordinate_lng

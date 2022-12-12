@@ -13,7 +13,7 @@ class GeoRepository
     public float $lat;
     public float $lng;
 
-    public function __construct(public string $address)
+    public function __construct(protected string $address)
     {
     }
 

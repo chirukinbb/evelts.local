@@ -22,7 +22,8 @@ class Event extends Model
         'point_id',
         'planing_time',
         'is_happened',
-        'slots'
+        'slots',
+        'address'
     ];
 
     public function category()
@@ -47,7 +48,7 @@ class Event extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function subscribers()
