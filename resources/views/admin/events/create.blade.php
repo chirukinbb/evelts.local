@@ -16,8 +16,9 @@
 @endsection
 
 @section('content')
-    <form action="{{route('admin.events.store')}}" method="post" class="pt-3">
+    <form action="{{route('admin.events.store')}}" method="post" class="pt-3"  enctype="multipart/form-data">
         @csrf
+        <x-form-message :errors="$errors"/>
         <div class="thumbnail"></div>
         <label for="thumbnail" class="form-label d-block">
             Upload thumbnail
@@ -47,16 +48,16 @@
         <x-form.address-input/>
         <div class="row mb-3">
             <div class="col-4">
-                <input type="number" class="form-control integer" placeholder="Event slots" name="slots">
+                <input type="number" class="form-control integer validation" placeholder="Event slots" name="slots">
             </div>
             <div class="col-4">
-                <input type="text" class="form-control" id="datepicker" placeholder="Date & time of event">
-                <input type="hidden" name="date">
+                <input type="text" class="form-control validation" id="datepicker" placeholder="Date & time of event">
+                <input type="hidden" name="planing_time">
             </div>
             <div class="col-4">
                 <select id="timepicker" class="form-control">
                     @for($i = 0;$i < 24;$i ++)
-                        <option value="{{$i > 9 ? $i : '0'.$i}}:00:00">{{$i > 9 ? $i : '0'.$i}}:00</option>
+                        <option value="{{$i}}">{{$i > 9 ? $i : '0'.$i}}:00</option>
                     @endfor
                 </select>
             </div>
@@ -75,19 +76,11 @@
                     const src = URL.createObjectURL(event.target.files[0]),
                         image = new Image();
 
-                    if ($('.thumbnail').length) {
-                        $(image).addClass('img-fluid')
-                        $(image).addClass('w-100')
-                        $(image).attr('src', src)
+                    $(image).addClass('img-fluid')
+                    $(image).addClass('w-100')
+                    $(image).attr('src', src)
 
-                        $('.thumbnail').html(image.outerHTML)
-
-                        $('form')[0].dispatchEvent(new Event('check-form'))
-                    }
-
-                    if ($('.avatar').length) {
-                        $('.avatar').css('background-image', 'url(' + src + ')')
-                    }
+                    $('.thumbnail').html(image.outerHTML)
 
                     $('form')[0].dispatchEvent(new Event('check-form'))
                 }
@@ -102,19 +95,15 @@
 
             $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'})
 
-            $('#datepicker,#timepicker').on('input change',function () {
+            $('#datepicker,#timepicker').on('change',function () {
                 let date = $('#datepicker').datepicker('getDate'),
                     time = $('#timepicker').val(),
-                    timestamp = Date.parse(date)//.toString()
-                console.log(date.setHours(22))
+                    timestamp = date.setHours(time)
 
-                $('input[name=date]').val(timestamp)
+                $('input[name=planing_time]').val(timestamp)
+
+                $('form')[0].dispatchEvent(new Event('check-form'))
             })
-
-            Date.prototype.addHours = function(h) {
-                this.setTime(this.getTime() + (h*60*60*1000));
-                return this;
-            }
 
             $('.integer').on('keyup',function () {
                 $(this).val(parseInt($(this).val()))

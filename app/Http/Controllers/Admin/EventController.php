@@ -42,13 +42,17 @@ class EventController extends Controller
         $eventModel->description = $request->description;
         $eventModel->thumbnail_url = $request->thumbnail->storePublicly('events/thumbnails');
         $eventModel->category_id = $request->category_id;
+        $eventModel->planing_time = $request->planing_time;
+        $eventModel->user_id = $request->user_id;
+        $eventModel->slots = $request->slots;
         $eventModel->country_id = $address->country_id;
         $eventModel->point_id = $address->point_id;
         $eventModel->coordinate_lat = $address->lat;
         $eventModel->coordinate_lng = $address->lng;
-        $eventModel->planing_time = $request->planing_time;
 
         $eventModel->save();
+
+        return redirect()->route('admin.events.index')->with('success','Event created!');
     }
 
     /**

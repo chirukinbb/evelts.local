@@ -27,17 +27,17 @@ class Event extends Model
 
     public function category()
     {
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function country()
     {
-        return $this->hasOne(Country::class);
+        return $this->belongsTo(Country::class);
     }
 
     public function point()
     {
-        return $this->hasOne(Point::class);
+        return $this->belongsTo(Point::class);
     }
 
     public function tags()
@@ -47,7 +47,7 @@ class Event extends Model
 
     public function author()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function subscribers()

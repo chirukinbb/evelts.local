@@ -22,8 +22,11 @@ class GeoRepository
         $response = \Http::withHeaders(['Referer' => route('home')])->get(
             sprintf('https://api.tomtom.com/search/2/geocode/%s.json', $this->address),
             ['key' => env('TOM_TOM_GEOCODING_API_KEY')]
-        );dd(json_decode($response->body()));
+        );
         $address = json_decode($response->body())->results[0]->address;
+
+        $this->lat =  json_decode($response->body())->results[0]->position->lat;
+        $this->lng =  json_decode($response->body())->results[0]->position->lon;
 
         $this->setCountry($address->countryCode, $address->country);
         $this->setPoint($address->municipalitySubdivision);

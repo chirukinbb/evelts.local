@@ -25,8 +25,8 @@
             <tr>
                 <th scope="row">{{$event->id}}</th>
                 <td>{{$event->title}}</td>
-                <td>{{$event->author->name}}</td>
-                <td>{{$event->country}}, {{$event->city}}</td>
+                <td>{{$event->author?->name}}</td>
+                <td>{{$event->country->name}}, {{$event->point->name}}</td>
                 <td>
                     <a href="{{route('admin.events.edit',['event'=>$event->id])}}"
                        class="btn btn-primary w-100">Edit</a>

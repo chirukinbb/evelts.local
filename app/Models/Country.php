@@ -15,4 +15,9 @@ class Country extends Model
         'iso',
         'name'
     ];
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
 }
