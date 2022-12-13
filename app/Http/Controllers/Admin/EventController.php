@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\User;
 use App\Repositories\GeoRepository;
+use App\Services\TagService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -52,13 +53,17 @@ class EventController extends Controller
 
         $eventModel->save();
 
-        return redirect()->route('admin.events.index')->with('success','Event created!');
+        $tagService = new TagService($eventModel);
+
+        $tagService->action($request->tags);
+
+        return redirect()->route('admin.events.index')->with('success', 'Event created!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -69,7 +74,7 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -83,8 +88,8 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -95,7 +100,7 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

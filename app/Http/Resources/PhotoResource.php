@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Tag;
+use App\Models\Photo;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagResource extends JsonResource
+class PhotoResource extends JsonResource
 {
     /**
-     * @var Tag
+     * @var Photo
      */
     public $resource;
 
@@ -16,7 +16,7 @@ class TagResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'name' => $this->resource->name
+            'url' => $this->resource->photo_url
         ];
     }
 }

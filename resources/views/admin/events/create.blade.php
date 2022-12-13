@@ -13,10 +13,19 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
             integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        .border-0:focus-visible {
+            outline: none;
+        }
+
+        .border {
+            border-radius: .375rem;
+        }
+    </style>
 @endsection
 
 @section('content')
-    <form action="{{route('admin.events.store')}}" method="post" class="pt-3"  enctype="multipart/form-data">
+    <form action="{{route('admin.events.store')}}" method="post" class="pt-3" enctype="multipart/form-data">
         @csrf
         <x-form-message :errors="$errors"/>
         <div class="thumbnail"></div>
@@ -62,6 +71,9 @@
                 </select>
             </div>
         </div>
+        <div class="border mb-3">
+            <input type="text" class="border-0">
+        </div>
         <div class="submit">
             <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
         </div>
@@ -95,7 +107,7 @@
 
             $('#datepicker').datepicker({dateFormat: 'yy-mm-dd'})
 
-            $('#datepicker,#timepicker').on('change',function () {
+            $('#datepicker,#timepicker').on('change', function () {
                 let date = $('#datepicker').datepicker('getDate'),
                     time = $('#timepicker').val(),
                     timestamp = date.setHours(time)
@@ -105,7 +117,7 @@
                 $('form')[0].dispatchEvent(new Event('check-form'))
             })
 
-            $('.integer').on('keyup',function () {
+            $('.integer').on('keyup', function () {
                 $(this).val(parseInt($(this).val()))
             })
 

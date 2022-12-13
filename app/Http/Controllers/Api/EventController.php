@@ -9,6 +9,7 @@ use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Repositories\EventRepository;
 use App\Repositories\GeoRepository;
+use App\Services\TagService;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -48,6 +49,10 @@ class EventController extends Controller
         $eventModel->coordinate_lng = $address->lng;
 
         $eventModel->save();
+
+        $tagService = new TagService($eventModel);
+
+        $tagService->action($request->tags);
 
         return EventResource::make($eventModel);
     }

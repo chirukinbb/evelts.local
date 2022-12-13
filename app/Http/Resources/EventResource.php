@@ -24,11 +24,11 @@ class EventResource extends JsonResource
             'coordinate_lng' => $this->resource->coordinate_lng,
             'category' => CategoryResource::make($this->resource->category)->toArray($request),
             'author' => UserResource::make($this->resource->author)->toArray($request),
-            'slots'=>$this->resource->slots,
-            'tags'=>TagResource::collection($this->resource->tags)->toArray($request),
-            'gallery',
-            'comments',
-            'planing_time'=>$this->resource->planing_time
+            'slots' => $this->resource->slots,
+            'tags' => TagResource::collection($this->resource->tags)->toArray($request),
+            'gallery' => PhotoResource::collection($this->resource->gallery)->toArray($request),
+            'comments' => CommentResource::collection($this->resource->comments()->whereNull('parent_comment_id')->get())->toArray($request),
+            'planing_time' => $this->resource->planing_time
         ];
     }
 }

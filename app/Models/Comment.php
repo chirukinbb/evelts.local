@@ -16,6 +16,11 @@ class Comment extends Model
         'content'
     ];
 
+    public function author()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function event()
     {
         return $this->belongsTo(Event::class);
