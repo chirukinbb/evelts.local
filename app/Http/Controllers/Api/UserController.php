@@ -15,17 +15,19 @@ class UserController extends Controller
 {
     public function auth(AuthRequest $request)
     {
-        $user = \App\Models\User::whereEmail($request->input('email'))->first();
+        $user = \App\Models\User::whereEmail($request->email)->first();
 
         if (is_null($user)) {
-            list($user, $password, $slug) = $this->registration($request->input('email'), $request->input('password'));
+            extract($this->registration($request->email, $request->password));
 
             UserRegisterEvent::dispatch($user, $password, $slug);
         }
 
-        return $request->input('password') ?
-            (Hash::check($request->input('password'), $user->password) ? AuthResource::make(User::login($request->input('email'))) : response()->json(0, 403)) :
-            AuthResource::make(User::login($request->input('email')));
+        return $request->password ?
+            (Hash::check($request->password, $user->password) ?
+                AuthResource::make(User::login($request->email)) :
+                response()->json(0, 403)) :
+            AuthResource::make(User::login($request->email));
     }
 
     public function update(UserDataRequest $request)
@@ -64,5 +66,10 @@ class UserController extends Controller
         User::removeFromFriend($userId);
 
         return response()->json();
+    }
+
+    private function registration(string $email, string $password)
+    {
+        return User::registration($email, $password);
     }
 }

@@ -65,7 +65,7 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -97,7 +97,6 @@ class EventController extends Controller
 
         $eventModel->title = $request->title;
         $eventModel->description = $request->description;
-        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('public/events/thumbnails');
         $eventModel->category_id = $request->category_id;
         $eventModel->planing_time = $request->planing_time;
         $eventModel->user_id = $request->user_id;
@@ -107,6 +106,10 @@ class EventController extends Controller
         $eventModel->point_id = $address->point_id;
         $eventModel->coordinate_lat = $address->lat;
         $eventModel->coordinate_lng = $address->lng;
+
+        if ($request->thumbnail) {
+            $eventModel->thumbnail_url = $request->thumbnail->storePublicly('public/events/thumbnails');
+        }
 
         $eventModel->save();
 

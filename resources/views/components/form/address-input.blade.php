@@ -1,4 +1,4 @@
-<div class="address-section validation" data-error="1">
+<div class="address-section validation" data-error="{{$address ? 0 : 1}}">
     <div class="row">
         <div class="col-auto flex-grow-1">
             <input type="text" class="form-control mb-3" name="address"

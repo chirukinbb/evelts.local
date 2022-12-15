@@ -28,15 +28,17 @@
 @endsection
 
 @section('content')
-    <form action="{{route('admin.events.store')}}" method="post" class="pt-3" enctype="multipart/form-data">
+    <form action="{{route('admin.events.update',['event'=>$event->id])}}" method="post" class="pt-3"
+          enctype="multipart/form-data">
         @csrf
+        @method('patch')
         <x-form-message :errors="$errors"/>
         <div class="thumbnail">
             <img src="{{asset($event->thumbnail_url)}}" alt="" class="img-fluid w-100">
         </div>
         <label for="thumbnail" class="form-label d-block">
             Upload thumbnail
-            <input type="file" class="form-control mb-3 validation" name="thumbnail" accept="image/jpeg, image/png">
+            <input type="file" class="form-control mb-3" name="thumbnail" accept="image/jpeg, image/png">
         </label>
         <input type="text" value="{{$event->title}}" class="form-control mb-3 validation" name="title"
                placeholder="Title">
@@ -96,7 +98,7 @@
                         <path
                             d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                     </svg>
-                    <input type="hidden" name="tags[]">
+                    <input type="hidden" name="tags[]" value="{{$tag->name}}">
                 </div>
             @endforeach
             <input type="text" class="border-0 tag-input">

@@ -9,19 +9,27 @@ class TagService
 {
     public function __construct(protected Event $event)
     {
+        $this->event->tags()->delete();
     }
 
     public function action(array $tagNames)
     {
-        foreach ($tagNames as $name) {
+        foreach ($this->unique($tagNames) as $name) {
             $tag = $this->getTagModel($name);
             $this->save($tag);
         }
     }
 
+    protected function unique(array $array)
+    {
+        return array_unique(array_map(function ($el) {
+            return mb_strtolower($el);
+        }, $array));
+    }
+
     protected function getTagModel(string $name)
     {
-        return Tag::firstOrCreate(['name' => mb_strtolower($name)]);
+        return Tag::firstOrCreate(['name' => $name]);
     }
 
     protected function save(Tag $tag)

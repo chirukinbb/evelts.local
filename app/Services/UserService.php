@@ -13,7 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class UserService
 {
-    public function oAuth(int $type, string $token)
+    public function oAuth(string $token, int $type = User::GOOGLE_AUTH)
     {
         switch ($type) {
             case User::FACEBOOK_AUTH:
@@ -84,7 +84,10 @@ class UserService
         $user = ($userId === 0) ? Auth::user() : User::find($userId);
 
         return $user->data->update(array_merge(
-            isset($attrs['avatar']) ? ['avatar_url' => $attrs['avatar']->storePubliclyAs('avatars', $user->id . '.' . $attrs['avatar']->extension(), 'public')] : [],
+            isset($attrs['avatar']) ? [
+                'avatar_url' => $attrs['avatar']->storePubliclyAs('avatars',
+                    $user->id.'.'.$attrs['avatar']->extension(), 'public')
+            ] : [],
             ['description' => $attrs['description']]
         ));
     }

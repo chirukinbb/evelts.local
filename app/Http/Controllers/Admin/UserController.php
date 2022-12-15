@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function store(RegistrationRequest $request)
     {
-        return is_array(\App\Facades\User::registration($request->input('email')),) ?
+        return is_array(\App\Facades\User::registration($request->input('email'))) ?
             redirect()->route('admin.users.index')->with(['success' => 'Success! User created']) :
             redirect()->route('admin.users.index')->with(['error' => 'Something went wrong...']);
     }
@@ -31,7 +31,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)

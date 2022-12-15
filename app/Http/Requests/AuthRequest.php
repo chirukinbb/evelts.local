@@ -4,6 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $email
+ * @property string $password
+ * @property string $token
+ */
 class AuthRequest extends FormRequest
 {
     public function rules()
@@ -11,8 +16,7 @@ class AuthRequest extends FormRequest
         return [
             'email' => 'email',
             'password' => 'string',
-            'token' => 'string',
-            'type' => 'integer'
+            'token' => 'string'
         ];
     }
 }

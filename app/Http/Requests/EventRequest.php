@@ -23,18 +23,17 @@ class EventRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'=>'required|string',
-            'description'=>'required|string',
-            'thumbnail'=>[
-                'required',
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'thumbnail' => [
                 File::types(['jpeg', 'png'])->max(1024)
             ],
-            'address'=>'required|string',
-            'category_id'=>'required|numeric',
-            'user_id'=>'numeric',
-            'slots'=>'numeric',
-            'tags'=>'array',
-            'planing_time'=>'required|numeric'
+            'address' => 'required|string',
+            'category_id' => 'required|numeric',
+            'user_id' => 'numeric',
+            'slots' => 'numeric',
+            'tags' => 'array',
+            'planing_time' => 'required|numeric'
         ];
     }
 }
