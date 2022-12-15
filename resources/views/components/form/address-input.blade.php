@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-auto flex-grow-1">
             <input type="text" class="form-control mb-3" name="address"
-                   placeholder="Enter address">
+                   placeholder="Enter address" value="{{$address}}">
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary check disabled" disabled>Check address</button>
@@ -102,23 +102,27 @@
 
                 renderMap(coordinates.split(','))
             }
-
-            function renderMap(coordinates) {
-                const map = tt.map({
-                    container: 'map-container',
-                    key: '{{env('TOM_TOM_GEOCODING_API_KEY')}}',
-                    center: coordinates,
-                    zoom: 15
-                })
-
-                new tt.Marker().setLngLat(coordinates).addTo(map);
-
-                $('#map-container').css('height', 400)
-                $('#map-container').addClass('mb-3')
-                $('.address-section').attr('data-error', 0)
-
-                $('form')[0].dispatchEvent(new Event('check-form'))
-            }
         })
+
+        @if($address)
+        renderMap({lat: {{$lat}}, lon: {{$lng}}})
+        @endif
+
+        function renderMap(coordinates) {
+            const map = tt.map({
+                container: 'map-container',
+                key: '{{env('TOM_TOM_GEOCODING_API_KEY')}}',
+                center: coordinates,
+                zoom: 15
+            })
+
+            new tt.Marker().setLngLat(coordinates).addTo(map);
+
+            $('#map-container').css('height', 400)
+            $('#map-container').addClass('mb-3')
+            $('.address-section').attr('data-error', 0)
+
+            $('form')[0].dispatchEvent(new Event('check-form'))
+        }
     })(jQuery, tt)
 </script>

@@ -11,16 +11,15 @@ class AddressInput extends Component
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(
+        public string|null $address,
+        public float|null  $lat,
+        public float|null  $lng
+    )
     {
         //
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
-     */
     public function render()
     {
         return view('components.form.address-input');

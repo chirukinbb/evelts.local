@@ -62,14 +62,16 @@
                 </select>
             </div>
         </div>
-        <x-form.address-input/>
+        <x-form.address-input :address="$event->address" :lat="$event->coordinate_lat" :lng="$event->coordinate_lng"/>
         <div class="row mb-3">
             <div class="col-4">
                 <input type="number" class="form-control integer validation" placeholder="Event slots"
                        value="{{$event->slots}}" name="slots">
             </div>
             <div class="col-4">
-                <input type="text" class="form-control validation" id="datepicker" placeholder="Date & time of event">
+                <input type="text" value="{{\Carbon\Carbon::parse($event->planing_time/1000)->format('Y-m-d')}}"
+                       class="form-control validation" id="datepicker"
+                       placeholder="Date & time of event">
                 <input type="hidden" name="planing_time" value="{{$event->planing_time}}">
             </div>
             <div class="col-4">

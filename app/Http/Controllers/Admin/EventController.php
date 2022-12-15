@@ -10,7 +10,6 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\GeoRepository;
 use App\Services\TagService;
-use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
@@ -43,7 +42,7 @@ class EventController extends Controller
 
         $eventModel->title = $request->title;
         $eventModel->description = $request->description;
-        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('events/thumbnails');
+        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('public/events/thumbnails');
         $eventModel->category_id = $request->category_id;
         $eventModel->planing_time = $request->planing_time;
         $eventModel->user_id = $request->user_id;
@@ -89,26 +88,39 @@ class EventController extends Controller
         ));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(EventRequest $request, $id)
     {
-        //
+        $address = new GeoRepository($request->address);
+        $address->geocoding();
+
+        $eventModel = Event::find($id);
+
+        $eventModel->title = $request->title;
+        $eventModel->description = $request->description;
+        $eventModel->thumbnail_url = $request->thumbnail->storePublicly('public/events/thumbnails');
+        $eventModel->category_id = $request->category_id;
+        $eventModel->planing_time = $request->planing_time;
+        $eventModel->user_id = $request->user_id;
+        $eventModel->slots = $request->slots;
+        $eventModel->address = $request->address;
+        $eventModel->country_id = $address->country_id;
+        $eventModel->point_id = $address->point_id;
+        $eventModel->coordinate_lat = $address->lat;
+        $eventModel->coordinate_lng = $address->lng;
+
+        $eventModel->save();
+
+        $tagService = new TagService($eventModel);
+
+        $tagService->action($request->tags);
+
+        return redirect()->route('admin.events.index')->with('success', 'Event updated!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        Event::find($id)->delete();
+
+        return redirect()->route('admin.events.index')->with('success', 'Event deleted!');
     }
 }

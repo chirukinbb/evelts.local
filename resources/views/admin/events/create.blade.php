@@ -56,7 +56,7 @@
                 </select>
             </div>
         </div>
-        <x-form.address-input/>
+        <x-form.address-input address="" lat="0" lng="0"/>
         <div class="row mb-3">
             <div class="col-4">
                 <input type="number" class="form-control integer validation" placeholder="Event slots" name="slots">
