@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EventRequest;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\GeoRepository;
 use App\Services\TagService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -25,10 +25,12 @@ class EventController extends Controller
     {
         $categories = Category::all();
         $users = User::all();
+        $tags = Tag::all();
 
         return view('admin.events.create', compact(
             'users',
-            'categories'
+            'categories',
+            'tags'
         ));
     }
 
@@ -46,6 +48,7 @@ class EventController extends Controller
         $eventModel->planing_time = $request->planing_time;
         $eventModel->user_id = $request->user_id;
         $eventModel->slots = $request->slots;
+        $eventModel->address = $request->address;
         $eventModel->country_id = $address->country_id;
         $eventModel->point_id = $address->point_id;
         $eventModel->coordinate_lat = $address->lat;
@@ -63,7 +66,7 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -71,25 +74,26 @@ class EventController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        $events = Event::paginate(15);
+        $event = Event::find($id);
         $categories = Category::all();
         $users = User::all();
-        //
+        $tags = Tag::all();
+
+        return view('admin.events.edit', compact(
+            'event',
+            'users',
+            'categories',
+            'tags'
+        ));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -100,7 +104,7 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

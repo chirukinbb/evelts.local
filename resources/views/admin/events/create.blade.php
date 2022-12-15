@@ -2,6 +2,7 @@
 /**
  * @var \App\Models\User $user
  * @var \App\Models\Category $category
+ * @var \App\Models\Tag $tag
  */
 ?>
 @extends('admin.layout')
@@ -20,6 +21,7 @@
 
         .border {
             border-radius: .375rem;
+            padding: 0.375rem .75rem;
         }
     </style>
 @endsection
@@ -71,18 +73,59 @@
                 </select>
             </div>
         </div>
-        <div class="border mb-3">
-            <input type="text" class="border-0">
+        <div class="border mb-3" id="tagsCloud">
+            <input type="text" class="border-0 tag-input">
         </div>
         <div class="submit">
             <button type="submit" class="btn btn-primary w-100 disabled" disabled>Save</button>
         </div>
     </form>
+    <template id="tag">
+        <div class="border d-inline-block me-2">
+            <span class="name"></span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                 class="bi bi-x-circle close"
+                 viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path
+                    d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+            <input type="hidden" name="tags[]">
+        </div>
+    </template>
 @endsection
 
 @section('inline-script')
     <script>
         (function ($) {
+            $('.tag-input').autocomplete({
+                source: [
+                    @foreach($tags as $tag)
+                        '{{$tag->name}}',
+                    @endforeach
+                ]
+            })
+
+            $('.tag-input').on('keyup', function (event) {
+                event.preventDefault()
+
+                if (event.keyCode === 32) {
+                    if ($(this).val().trim().length) {
+                        let template = $.parseHTML($('#tag').clone().html())
+                        $(template).find('span.name').text($(this).val().trim())
+                        $(template).find('input').val($(this).val().trim())
+
+                        $(this).closest('#tagsCloud').prepend(template)
+                    }
+
+                    $(this).val('')
+                }
+            })
+
+            $('#tagsCloud').on('click', '.close', function () {
+                $(this).closest('.border').remove()
+            })
+
             $('input[type=file]').on('change', function (event) {
                 if (event.target.files.length > 0) {
                     const src = URL.createObjectURL(event.target.files[0]),
