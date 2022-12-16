@@ -6,46 +6,59 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use yidas\googleMaps\Client;
 use function dd;
 use function env;
 
 class EventRepository
 {
-    public function select(array $attrs)
-    {
-        $events = Event::query();
+    protected Builder $eventQueryBuilder;
 
-        foreach ($attrs['filter'] as $key => $value) {
-            $events = call_user_func([$this, $key], $events, $value);
+    public function __construct()
+    {
+        $this->eventQueryBuilder = Event::query();
+    }
+
+    public function getList(array $attrs)
+    {
+        foreach ($attrs as $key => $value) {
+            call_user_func([$this, $key], $value);
         }
 
-        return $events->paginate(env('PAGINATION_COUNT'));
+        return $this->eventQueryBuilder->get();
     }
 
-    protected function country(Builder $builder, array $countries)
+    protected function search(string $query)
     {
-        return $builder->where('country', 'in', $countries);
+        $this->eventQueryBuilder->where('title', 'like', '%'.$query.'%')
+            ->orWhere('title', 'like', '%'.$query.'%');
     }
 
-    protected function city(Builder $builder, array $cities)
+    protected function countries(array $countries)
     {
-        return $builder->where('city', 'in', $cities);
+        $this->eventQueryBuilder->whereIn('country_id', $countries);
     }
 
-    protected function category(Builder $builder, array $categories)
+    protected function points(array $cities)
     {
-        return $builder->whereRelation('category', 'title', 'in', $categories);
+        $this->eventQueryBuilder->whereIn('point_id', $cities);
     }
 
-    protected function author(Builder $builder, array $authors)
+    protected function categories(array $categories)
     {
-        return $builder->whereRelation('user', 'name', 'in', $authors);
+        $this->eventQueryBuilder->whereIn('category_id', $categories);
     }
 
-    protected function date(Builder $builder, array $dates)
+    protected function authors(array $authors)
     {
-        return $builder->whereBetween('planing_time', $dates);
+        $this->eventQueryBuilder->whereIn('user_id', $authors);
+    }
+
+    protected function dates(array $dates)
+    {
+        $this->eventQueryBuilder->whereBetween('planing_time', $dates);
     }
 
     public function create(array $attrs)
@@ -62,7 +75,7 @@ class EventRepository
 //        $event->planing_time = $attrs['planing_time'];
 
         $http = \Http::get(
-            'https://api.tomtom.com/search/2/geocode/' . $attrs['address'] . '.json',
+            'https://api.tomtom.com/search/2/geocode/'.$attrs['address'].'.json',
             ['params' => ['key' => env('TOM_TOM_GEOCODING_API_KEY')]]
         );
 
@@ -80,12 +93,6 @@ class EventRepository
         $event->coordinate_lat = $attrs['coordinate_lat'];
         $event->coordinate_lng = $attrs['coordinate_lng'];
         $event->planing_time = $attrs['planing_time'];
-
-        $client = new Client(['key' => env('GOOGLE_CLIENT_ID')]);
-        $place = $client->reverseGeocode([
-            $attrs['coordinate_lat'], $attrs['coordinate_lng']
-        ]);
-        dd($place);
     }
 
     public function get(int $id)

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('v1/auth', [\App\Http\Controllers\Api\UserController::class, 'auth']);
 
+Route::get('v1/events', [\App\Http\Controllers\Api\EventController::class, 'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/user/updateData', [\App\Http\Controllers\Api\UserController::class, 'update']);
     Route::post('v1/user/updatePassword', [\App\Http\Controllers\Api\UserController::class, 'updatePassword']);
@@ -26,7 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('v1/categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']);
 
-    Route::get('v1/events', [\App\Http\Controllers\Api\EventController::class, 'index']);
     Route::post('v1/event/create', [\App\Http\Controllers\Api\EventController::class, 'create']);
     Route::post('v1/event/update', [\App\Http\Controllers\Api\EventController::class, 'update']);
     Route::get('v1/event/{id}', [\App\Http\Controllers\Api\EventController::class, 'get']);

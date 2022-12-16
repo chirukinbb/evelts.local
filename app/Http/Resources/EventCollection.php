@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Event;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EventColllection extends JsonResource
+class EventCollection extends JsonResource
 {
     /**
      * @var Event
@@ -19,9 +19,9 @@ class EventColllection extends JsonResource
             'title' => $this->resource->title,
             'thumbnail_url' => $this->resource->thumbnail_url,
             'country' => $this->resource->country,
-            'city' => $this->resource->city,
+            'point' => $this->resource->point,
             'category' => CategoryResource::make($this->resource->category),
-            'author' => UserResource::make($this->resource->user)
+            'author' => UserResource::make($this->resource->author)
         ];
     }
 }

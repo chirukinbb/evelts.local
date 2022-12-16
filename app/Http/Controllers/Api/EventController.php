@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EventListRequest;
 use App\Http\Requests\EventRequest;
+use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Repositories\EventRepository;
@@ -20,7 +21,7 @@ class EventController extends Controller
 
     public function index(EventListRequest $request)
     {
-        return EventResource::collection($this->service->select($request->all()));
+        return EventCollection::collection($this->service->getList($request->all()));
     }
 
     public function get(int $id)

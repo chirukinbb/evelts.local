@@ -4,10 +4,23 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $search
+ * @property int[] $points
+ * @property int[] $dates
+ * @property int[] $categories
+ * @property int[] $authors
+ */
 class EventListRequest extends FormRequest
 {
-    public function full()
+    public function rules()
     {
-        return array_merge($this->all(), $this->allFiles());
+        return [
+            'search' => 'string',
+            'points' => 'array',
+            'dates' => 'array',
+            'categories' => 'array',
+            'authors' => 'array'
+        ];
     }
 }

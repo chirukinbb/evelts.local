@@ -22,5 +22,12 @@ with Google
 Response
 
 ````json
-
+{
+    "data": {
+        "user": "User Object*",
+        "token": "string"
+    }
+}
 ````
+
+* [User Object](https://github.com/chirukinbb/evelts.local/blob/master/docs/objects/user.md)

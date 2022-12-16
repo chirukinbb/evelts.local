@@ -57,7 +57,7 @@ class UserService
         return compact('user', 'password', 'slug');
     }
 
-    protected function login(string $email)
+    public function login(string $email)
     {
         $user = User::whereEmail($email)->first();
 
