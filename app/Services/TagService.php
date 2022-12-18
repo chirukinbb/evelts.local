@@ -9,7 +9,7 @@ class TagService
 {
     public function __construct(protected Event $event)
     {
-        $this->event->tags()->delete();
+        $this->event->tags()->detach();
     }
 
     public function action(array $tagNames)

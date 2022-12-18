@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Event;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -24,7 +26,9 @@ class EventRepository
     public function getList(array $attrs)
     {
         foreach ($attrs as $key => $value) {
-            call_user_func([$this, $key], $value);
+            if (method_exists($this, $key)) {
+                call_user_func([$this, $key], $value);
+            }
         }
 
         return $this->eventQueryBuilder->get();
@@ -58,41 +62,18 @@ class EventRepository
 
     protected function dates(array $dates)
     {
+        $dates = array_map(function ($date) {
+            return Carbon::parse($date / 1000)->toString();
+        }, $dates);
+
         $this->eventQueryBuilder->whereBetween('planing_time', $dates);
     }
 
-    public function create(array $attrs)
+    protected function tags(array $tags)
     {
-//        $event = Event::getModel();
-//
-//        $event->title = $attrs['title'];
-//        $event->description = $attrs['description'];
-//        $event->thumbnail_url = $attrs['thumbnail']->storePublic('events');
-//        $event->user_id = \Auth::id();
-//        $event->category_id = Category::whereTitle($attrs['description'])->first()->id;
-//        $event->coordinate_lat = $attrs['coordinate_lat'];
-//        $event->coordinate_lng = $attrs['coordinate_lng'];
-//        $event->planing_time = $attrs['planing_time'];
-
-        $http = \Http::get(
-            'https://api.tomtom.com/search/2/geocode/'.$attrs['address'].'.json',
-            ['params' => ['key' => env('TOM_TOM_GEOCODING_API_KEY')]]
-        );
-
-        dd($http->body());
-    }
-
-    public function update(array $attrs)
-    {
-        $event = Event::whereId($attrs['id'])->first();
-
-        $event->title = $attrs['title'];
-        $event->description = $attrs['description'];
-        $event->thumbnail_url = $attrs['thumbnail']->storePublic('events');
-        $event->category_id = Category::whereTitle($attrs['description'])->first()->id;
-        $event->coordinate_lat = $attrs['coordinate_lat'];
-        $event->coordinate_lng = $attrs['coordinate_lng'];
-        $event->planing_time = $attrs['planing_time'];
+        $this->eventQueryBuilder->whereRelation('tags', function (Builder $builder) use ($tags) {
+            $builder->whereIn('tags.id', $tags);
+        });
     }
 
     public function get(int $id)
@@ -135,5 +116,19 @@ class EventRepository
         if ($comment->user_id === \Auth::id() && Comment::whereParentCommentId($commentId)->doesntExist()) {
             $comment->delete();
         }
+    }
+
+    public function earlyEventDate()
+    {
+        $event = $this->eventQueryBuilder->select(DB::raw('min(planing_time)'))->first();
+
+        return Carbon::parse($event->planing_time/1000)->format('yy/mm/dd')
+    }
+
+    public function latestEventDate()
+    {
+        $event = $this->eventQueryBuilder->select(DB::raw('max(planing_time)'))->first();
+
+        return Carbon::parse($event->planing_time/1000)->format('yy/mm/dd')
     }
 }

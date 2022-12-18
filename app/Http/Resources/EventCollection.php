@@ -21,7 +21,8 @@ class EventCollection extends JsonResource
             'country' => $this->resource->country,
             'point' => $this->resource->point,
             'category' => CategoryResource::make($this->resource->category),
-            'author' => UserResource::make($this->resource->author)
+            'author' => UserResource::make($this->resource->author),
+            'tags' => TagResource::collection($this->resource->tags)
         ];
     }
 }

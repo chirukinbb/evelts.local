@@ -9,7 +9,9 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property int[] $points
  * @property int[] $dates
  * @property int[] $categories
+ * @property int[] $countries
  * @property int[] $authors
+ * @property int[] $tags
  */
 class EventListRequest extends FormRequest
 {
@@ -20,7 +22,9 @@ class EventListRequest extends FormRequest
             'points' => 'array',
             'dates' => 'array',
             'categories' => 'array',
-            'authors' => 'array'
+            'countries' => 'array',
+            'authors' => 'array',
+            'tags' => 'array'
         ];
     }
 }
