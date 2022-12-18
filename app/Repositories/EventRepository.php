@@ -31,7 +31,8 @@ class EventRepository
             }
         }
 
-        return $this->eventQueryBuilder->get();
+        return $this->eventQueryBuilder->where('planing_time', '>=', Carbon::now())
+            ->get();
     }
 
     protected function search(string $query)
@@ -120,15 +121,11 @@ class EventRepository
 
     public function earlyEventDate()
     {
-        $event = $this->eventQueryBuilder->select(DB::raw('min(planing_time)'))->first();
-
-        return Carbon::parse($event->planing_time/1000)->format('yy/mm/dd')
+        return $this->eventQueryBuilder->min('planing_time');
     }
 
     public function latestEventDate()
     {
-        $event = $this->eventQueryBuilder->select(DB::raw('max(planing_time)'))->first();
-
-        return Carbon::parse($event->planing_time/1000)->format('yy/mm/dd')
+        return $this->eventQueryBuilder->max('planing_time');
     }
 }

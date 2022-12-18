@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('v1/auth', [\App\Http\Controllers\Api\UserController::class, 'auth']);
 
-Route::get('v1/categories', [\App\Http\Controllers\Api\EventController::class, 'index']);
-Route::get('v1/dates', [\App\Http\Controllers\Api\EventController::class, 'index']);
-Route::get('v1/countries', [\App\Http\Controllers\Api\EventController::class, 'index']);
-Route::get('v1/points', [\App\Http\Controllers\Api\EventController::class, 'index']);
-Route::get('v1/events', [\App\Http\Controllers\Api\EventController::class, 'index']);
+Route::get('v1/categories', [\App\Http\Controllers\Api\EntityController::class, 'categories']);
+Route::get('v1/dates', [\App\Http\Controllers\Api\EventController::class, 'dates']);
+Route::get('v1/countries', [\App\Http\Controllers\Api\EntityController::class, 'countries']);
+Route::get('v1/points', [\App\Http\Controllers\Api\EntityController::class, 'points']);
+Route::get('v1/tags', [\App\Http\Controllers\Api\EntityController::class, 'tags']);
+Route::get('v1/events', [\App\Http\Controllers\Api\EntityController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/user/updateData', [\App\Http\Controllers\Api\UserController::class, 'update']);

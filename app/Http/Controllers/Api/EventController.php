@@ -58,6 +58,14 @@ class EventController extends Controller
         return EventResource::make($eventModel);
     }
 
+    public function dates()
+    {
+        return response()->json([
+            'start_date' => $this->service->earlyEventDate(),
+            'end_date' => $this->service->latestEventDate()
+        ]);
+    }
+
     public function update(EventRequest $request)
     {
 
