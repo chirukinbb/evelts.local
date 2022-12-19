@@ -2,32 +2,6 @@ Get list
 
 v1/events get-method
 
-optional params
-
-````json
-{
-    "search": "part of title or description",
-    "categories": [
-        "category id"
-    ],
-    "authors": [
-        "author id"
-    ],
-    "points": [
-        "point id"
-    ],
-    "countries": [
-        "country id"
-    ],
-    "tags": [
-        "tag id"
-    ],
-    "dates": [
-        "unix-timestamp"
-    ]
-}
-````
-
 ````json
 {
     "data": [
@@ -56,3 +30,35 @@ optional params
 ****  [User Object](https://github.com/chirukinbb/evelts.local/blob/master/docs/objects/user.md)
 
 ***** [Tag Object](https://github.com/chirukinbb/evelts.local/blob/master/docs/objects/tag.md)
+
+Get single
+
+v1/event/:id
+
+Response
+
+````json
+{
+    "id": 4,
+    "title": "kkkkkkkkkkkkk002227",
+    "thumbnail_url": "events/thumbnails/2BAGs02kjvsGb7k6Wlxhl3S1cmjEguopUenhjfL7.png",
+    "description": "ggggggggggggggghg",
+    "coordinate_lat": "50.59649",
+    "coordinate_lng": "32.34367",
+    "category": "Category object ***",
+    "author": "User object ****",
+    "slots": 99,
+    "tags": [
+        "Tag object *****"
+    ]
+    "gallery": [
+        "Photo object ******"
+    ],
+    "comments": [
+        "Comment object"
+    ],
+    "planing_time": "1672480800000"
+}
+````
+
+Add event

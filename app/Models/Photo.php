@@ -13,4 +13,9 @@ class Photo extends Model
         'event_id',
         'photo_url'
     ];
+
+    public function photo()
+    {
+        return $this->belongsTo(Event::class);
+    }
 }

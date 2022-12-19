@@ -31,7 +31,7 @@ class EventRepository
             }
         }
 
-        return $this->eventQueryBuilder->where('planing_time', '>=', Carbon::now())
+        return $this->eventQueryBuilder->where('planing_time', '>=', Carbon::now()->timestamp * 1000)
             ->get();
     }
 

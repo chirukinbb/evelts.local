@@ -11,7 +11,6 @@ class CategoryResource extends JsonResource
      * @var Category
      */
     public $resource;
-    public static $wrap = false;
 
     public function toArray($request)
     {

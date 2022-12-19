@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CountryResource;
+use App\Http\Resources\PointResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserResource;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Event;
+use App\Models\Point;
 use App\Models\Tag;
 use App\Models\User;
 use App\Repositories\EventRepository;
@@ -20,6 +22,11 @@ class EntityController extends Controller
     public function categories()
     {
         return CategoryResource::collection(Category::whereHas('events')->get());
+    }
+
+    public function points()
+    {
+        return PointResource::collection(Point::whereHas('events')->get());
     }
 
     public function tags()
